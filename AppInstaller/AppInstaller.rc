@@ -1,0 +1,529 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include <Windows.h>
+#include "resource.h"
+/////////////////////////////////////////////////////////////////////////////
+// 中文(简体，中国) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_MAINICON            ICON                    "res/Icons/Main.ico"
+
+ICON_TASKBAR            ICON                    "res/Icons/Main.ico"
+
+ICON_FILE               ICON                    "res/Icons/FileIcon.ico"
+
+ICON_WHITE              ICON                    "res/Icons/IconWhite.ico"
+
+ICON_COLOR              ICON                    "res/Icons/IconColor.ico"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// IMAGE
+//
+
+BLANK_NORMAL            IMAGE                   "res/Button/Normal/blank.png"
+
+BLANK_LIGHT             IMAGE                   "res/Button/Normal/blank_light.png"
+
+BLANK_PRESS             IMAGE                   "res/Button/Normal/blank_press.png"
+
+MIN_NORMAL              IMAGE                   "res/Button/Normal/min_back.png"
+
+MIN_LIGHT               IMAGE                   "res/Button/Normal/min_light.png"
+
+MIN_PRESS               IMAGE                   "res/Button/Normal/min_press.png"
+
+MAX_NORMAL              IMAGE                   "res/Button/Normal/max_back.png"
+
+MAX_LIGHT               IMAGE                   "res/Button/Normal/max_light.png"
+
+MAX_PRESS               IMAGE                   "res/Button/Normal/max_press.png"
+
+RESTORE_NORMAL          IMAGE                   "res/Button/Normal/restore_back.png"
+
+RESTORE_LIGHT           IMAGE                   "res/Button/Normal/restore_light.png"
+
+RESTORE_PRESS           IMAGE                   "res/Button/Normal/restore_press.png"
+
+CANCEL_NORMAL           IMAGE                   "res/Button/Normal/cancel_back.png"
+
+CANCEL_LIGHT            IMAGE                   "res/Button/Normal/cancel_light.png"
+
+CANCEL_PRESS            IMAGE                   "res/Button/Normal/cancel_press.png"
+
+BLANK_LARGR_NORMAL      IMAGE                   "res/Button/Large/blank.png"
+
+BLANK_LARGR_LIGHT       IMAGE                   "res/Button/Large/blank_light.png"
+
+BLANK_LARGR_PRESS       IMAGE                   "res/Button/Large/blank_press.png"
+
+MIN_LARGR_NORMAL        IMAGE                   "res/Button/Large/min_normal.png"
+
+MIN_LARGE_LIGHT         IMAGE                   "res/Button/Large/min_light.png"
+
+MIN_LARGR_PRESS         IMAGE                   "res/Button/Large/min_press.png"
+
+MAX_LARGE_NORMAL        IMAGE                   "res/Button/Large/max_normal.png"
+
+MAX_LARGE_LIGHT         IMAGE                   "res/Button/Large/max_light.png"
+
+MAX_LARGE_PRESS         IMAGE                   "res/Button/Large/max_press.png"
+
+RESTORE_LARGE_NORMAL    IMAGE                   "res/Button/Large/restore_normal.png"
+
+RESTORE_LARGE_LIGHT     IMAGE                   "res/Button/Large/restore_light.png"
+
+RESTORE_LARGE_PRESS     IMAGE                   "res/Button/Large/restore_press.png"
+
+CANCEL_LARGE_NORMAL     IMAGE                   "res/Button/Large/cancel_window_normal.png"
+
+CANCEL_LARGE_LIGHT      IMAGE                   "res/Button/Large/cancel_window_light.png"
+
+CANCEL_LARGE_PRESS      IMAGE                   "res/Button/Large/cancel_window_press.png"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// RCDATA
+//
+
+ICON_METRO              RCDATA                  "res/Icons/IconTitleBar.ico"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// RT_MANIFEST
+//
+
+IDR_MANIFEST1           RT_MANIFEST             "res/manifest.xml"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+IDR_VERSION_ZH_CN VERSIONINFO
+ FILEVERSION 1,0,1,7
+ PRODUCTVERSION 1,0,1,7
+ FILEFLAGSMASK 0x0L
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x0L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080404b0"
+        BEGIN
+            VALUE "CompanyName", "Bruce Winter"
+            VALUE "FileDescription", "应用安装程序"
+            VALUE "FileVersion", "1.0.1.7"
+            VALUE "LegalCopyright", "\\xA9Bruce Winter.  All rights reserved."
+            VALUE "ProductVersion", "1.0.1.7"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x804, 1200
+    END
+END
+
+IDR_VERSION_EN_US VERSIONINFO
+ FILEVERSION 1,0,1,7
+ PRODUCTVERSION 1,0,1,7
+ FILEFLAGSMASK 0x0L
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x0L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904e6"
+        BEGIN
+            VALUE "CompanyName", "Bruce Winter"
+            VALUE "FileDescription", "App Installer"
+            VALUE "FileVersion", "1.0.1.7"
+            VALUE "LegalCopyright", "\\xA9Bruce Winter.  All rights reserved."
+            VALUE "ProductVersion", "1.0.1.7"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1254
+    END
+END
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    WIN_TITLE               "应用安装程序"
+    PAGE_LOADING            "请稍候..."
+    PAGE_1_TITLE            "安装 %ls？"
+    PAGE_INFO_PUBLISHER     "发布者: %ls"
+END
+
+STRINGTABLE
+BEGIN
+    PAGE_INFO_VERSION       "版本: %ls"
+    PAGE_FUNCTIONS          "功能:"
+    PAGE_CHECK_RUNWHENREADY "当准备就绪时启动"
+    PAGE_2_LOADCERT         "正在导入证书..."
+    PAGE_2_INSTALL          "正在安装..."
+    PAGE_3_TITLE            "请选择一个有效的安装源以继续"
+    PAGE_4_TITLE            "%ls 已安装完成"
+    PAGE_5_TITLE            "%ls 安装失败"
+    DIALOG_SELLET_APPX      "Windows 应用包文件 (*.appx, *.appxbundle)"
+    DIALOG_SELLET_UNI       "所有文件 (*.*)"
+    BUTTON_1_SER1           "安装"
+    BUTTON_3_SER1           "打开文件"
+    BUTTON_4_SER1           "启动"
+    BUTTON_5_SER1           "关闭"
+    DIALOG_WINTITLE         "请选择有效的 Windows 应用包文件"
+    PAGE_1_APPHASINSTALLED  "%ls 已安装"
+END
+
+STRINGTABLE
+BEGIN
+    PAGE_2_TITLE            "正在安装 %ls"
+    PAGE_1_APP              "Microsoft Store 应用"
+    PAGE_2_LOADING          "请稍候..."
+    PAGE_2_INSTALLING       "正在安装 %d%%"
+    CLHELP_1                "命令行参数说明：\n\n"
+    CLHELP_2                "\t/?, /Help\n\t显示帮助窗口 (命令行参数说明)\n\n"
+    CLHELP_3                "\t/DisableFrame\n\t禁止使用自绘的窗口边框\n\n"
+    CLHELP_4                "\t/Win32Window\n\t不使用 WebUI，改用 Win32 窗口\n\n"
+    CLHELP_5                "\t/Silent\n\t一般情况下会自动安装，安装完成后在几秒后结束\n\n"
+    CLHELP_6                "\t/VerySilent\n\t静默安装，安装时不会显示任何信息，安装任务完成后自动结束\n\n"
+END
+
+STRINGTABLE
+BEGIN
+    textSupportCPU          "受支持的处理器架构: "
+    textSupportSystem       "受支持的 Windows 版本: %ls 及更高版本（应用最低运行系统版本: %ls）"
+    textSupportLanguage     "受支持的语言: "
+    textDependency          "以下是应用所需依赖包: "
+    textDependencyItem      "%ls, 所需最低版本: %ls"
+END
+
+STRINGTABLE
+BEGIN
+    INITWIDTH               "656"
+    INITHEIGHT              "412"
+    LIMITWIDTH              "504"
+    LIMITHEIGHT             "412"
+END
+
+STRINGTABLE
+BEGIN
+    CLHELP_7                "\t/NoGUI\n\t使用 WSAppPkgIns 安装。安装时会弹出命令行窗口，安装完成后需手动关闭窗口\n\n"
+END
+
+STRINGTABLE
+BEGIN
+    internetClient          "访问您的 Internet 连接"
+    internetClientServer    "访问您的 Internet 连接并充当服务器"
+    privateNetworkClientServer "访问您的家庭或工作网络"
+    documentsLibrary        "使用您的文档库"
+    picturesLibrary         "使用您的图片库"
+    videosLibrary           "使用您的视频库"
+    musicLibrary            "使用您的音乐库"
+    enterpriseAuthentication "使用您的企业域凭据"
+    sharedUserCertificates  "使用您设备上可用的软件和硬件证书"
+    removableStorage        "使用存储在外部存储设备上的数据"
+    appointments            "使用日历中的事件"
+    contacts                "使用您的联系人"
+END
+
+STRINGTABLE
+BEGIN
+    phoneCall               "访问您设备上的所有电话线路"
+    backgroundMediaPlayback "在后台播放媒体"
+    pointOfService          "使用条形码扫描仪和磁卡读卡器"
+    allJoyn                 "发现并与支持 AllJoyn 的应用和设备交互"
+    phoneCallHistoryPublic  "电话呼叫公开历史记录"
+    microphone              "使用您的麦克风"
+    offlineMapsManagement   "允许应用程序访问离线地图。"
+    objects3D               "以编程方式访问您的 3D 对象"
+    graphicsCaptureWithoutBorder "允许无边框图形捕获"
+    bluetooth               "与已配对的蓝牙设备通信"
+    lowLevelDevices         "物联网低级总线硬件"
+    location                "使用您的位置"
+    humaninterfacedevice    "使用支持人机接口设备 (HID) 协议的设备"
+    recordedCallsFolder     "访问您的通话记录"
+    proximity               "使用支持近场通信 (NFC) 服务的设备"
+    webcam                  "使用您的网络摄像头"
+END
+
+STRINGTABLE
+BEGIN
+    graphicsCaptureProgrammatic "允许使用图形捕获"
+    userNotificationListener "允许应用程序访问通知设置的当前状态"
+    userDataTasks           "允许应用程序访问任务设置的当前状态"
+    userAccountInformation  "访问您帐户的用户名和图片"
+    usb                     "访问您的 USB 连接设备"
+    systemManagement        "物联网系统管理"
+    spatialPerception       "查看您当前和过去的周围环境"
+    smsSend                 "发送 SMS 和 MMS 消息"
+    blockedChatMessages     "阅读被垃圾邮件过滤器应用阻止的 SMS 和 MMS 消息"
+    chat                    "阅读和删除文本消息"
+    codeGeneration          "动态生成代码"
+    voipCall                "使用设备的 IP 语音 (VoIP) 服务"
+    enterpriseDataPolicy    "为您的设备定义企业特定的政策"
+    inputInjectionBrokered  "允许应用程序以编程方式将各种形式的输入注入系统，例如 HID、触摸、笔、键盘或鼠标。"
+    remoteSystem            "允许应用程序访问与用户的 Microsoft 帐户关联的设备列表"
+END
+
+STRINGTABLE
+BEGIN
+    inProcessMediaExtension "进程内媒体扩展"
+    webPlatformMediaExtension "Web 平台媒体扩展"
+    previewStore            "Microsoft Store 预览功能"
+    confirmAppClose         "关闭自己和自己的窗口，并延迟关闭其应用程序"
+    runFullTrust            "使用所有系统资源"
+    previewUiComposition    "预览 Windows UI Composition API 以接收反馈"
+    slapiQueryLicenseValue  "查询软件许可政策"
+    localSystemServices     "在使用最大权限运行的计算机上安装服务"
+    packageManagement       "直接管理其他应用"
+    packageQuery            "搜集有关其他应用的信息"
+    packagePolicySystem     "控制与安装在设备上的应用相关的系统策略"
+    storeAppInstall         "管理应用安装"
+    appLicensing            "应用许可"
+    broadFileSystemAccess   "文件系统"
+    allowElevation          "以管理员身份运行"
+    unvirtualizedResources  "写入在卸载时不会清除的注册表项和文件"
+END
+
+STRINGTABLE
+BEGIN
+    extendedExecution       "允许应用程序在进入后台后继续执行一段时间的操作"
+    appointmentsSystem      "允许应用读取和修改用户日历上的所有事件"
+    contactsSystem          "允许应用读取已指定为受限或敏感的联系人信息，以及修改现有的联系人信息。"
+    phoneCallSystem         "允许应用访问设备上的所有电话线"
+    userDataAccounts        "可访问电子邮件、联系人、日历等的用户数据帐户"
+    userDataTasksSystem     "可访问系统任务项"
+END
+
+#endif    // 中文(简体，中国) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// 英语(美国) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    WIN_TITLE               "App Installer"
+    PAGE_LOADING            "Please wait..."
+    PAGE_1_TITLE            "Install %ls?"
+    PAGE_INFO_PUBLISHER     "Publisher: %ls"
+END
+
+STRINGTABLE
+BEGIN
+    PAGE_INFO_VERSION       "Version: %ls"
+    PAGE_FUNCTIONS          "Functions:"
+    PAGE_CHECK_RUNWHENREADY "Launch when ready"
+    PAGE_2_LOADCERT         "Importing certificates..."
+    PAGE_2_INSTALL          "Installing..."
+    PAGE_3_TITLE            "Please select a valid installation source to continue"
+    PAGE_4_TITLE            "%ls is ready"
+    PAGE_5_TITLE            "%ls is failed"
+    DIALOG_SELLET_APPX      "Windows App Package (*.appx, *.appxbundle)"
+    DIALOG_SELLET_UNI       "All files (*.*)"
+    BUTTON_1_SER1           "Install"
+    BUTTON_3_SER1           "Open File"
+    BUTTON_4_SER1           "Launch"
+    BUTTON_5_SER1           "Cancel"
+    DIALOG_WINTITLE         "Please select a valid app package file"
+    PAGE_1_APPHASINSTALLED  "%ls has been installed"
+END
+
+STRINGTABLE
+BEGIN
+    PAGE_2_TITLE            "Installing %s"
+    PAGE_1_APP              "Microsoft Store App"
+    PAGE_2_LOADING          "Please wait..."
+    PAGE_2_INSTALLING       "Installing %d%%"
+    CLHELP_1                "Usage:\n\n"
+    CLHELP_2                "\t/?, /Help\n\tDisplay help window (command line parameter description).\n\n"
+    CLHELP_3                "\t/DisableFrame\n\tDisable the use of self-drawn window borders.\n\n"
+    CLHELP_4                "\t/Win32Window\n\tDo not use WebUI, use Win32 window instead.\n\n"
+    CLHELP_5                "\t/Silent\n\tUnder normal circumstances, it will be automatically installed and will end after a few seconds.\n\n"
+    CLHELP_6                "\t/VerySilent\n\tSilent installation, no information will be displayed during installation, and the installation task will automatically end after completion.\n\n"
+END
+
+STRINGTABLE
+BEGIN
+    textSupportCPU          "Supported processor architectures: "
+    textSupportSystem       "Supported Windows versions: %ls and later (minimum running system version of the app: %ls)"
+    textSupportLanguage     "Supported languages:"
+    textDependency          "The following are the dependencies required by the application:"
+    textDependencyItem      "%ls, minimum required version: %ls"
+END
+
+STRINGTABLE
+BEGIN
+    CLHELP_7                "\t/NoGUI\n\tUse WSAppPkgIns to install. A command line window will pop up during installation, and you need to manually close the window after installation.\n\n"
+END
+
+STRINGTABLE
+BEGIN
+    internetClient          "Access your Internet connection"
+    internetClientServer    "Access your Internet connection and act as a server."
+    privateNetworkClientServer "Access your home or work networks"
+    documentsLibrary        "Use your documents library"
+    picturesLibrary         "Use your pictures library"
+    videosLibrary           "Use your video library"
+    musicLibrary            "Use your music library"
+    enterpriseAuthentication "Use your enterprise domain credentials"
+    sharedUserCertificates  "Use the software and hardware certificates available on your device"
+    removableStorage        "Use data stored on an external storage device"
+    appointments            "Use the appointments in your calendar"
+    contacts                "Use your contacts"
+END
+
+STRINGTABLE
+BEGIN
+    phoneCall               "Access all the phone lines on your device"
+    backgroundMediaPlayback "Play media in the background"
+    pointOfService          "Use barcode scanners and magnetic card readers"
+    allJoyn                 "Discover and interact with AllJoyn enabled apps and devices"
+    phoneCallHistoryPublic  "Phone Calls Public History"
+    microphone              "Use your microphone"
+    offlineMapsManagement   "Allows the application to access offline maps."
+    objects3D               "Programmatically access your 3D Objects"
+    graphicsCaptureWithoutBorder "Allows borderless graphics capture"
+    bluetooth               "Communicate with already paired Bluetooth devices"
+    lowLevelDevices         "IoT Low-Level Bus Hardware"
+    location                "Use your location"
+    humaninterfacedevice    "Use your devices that support the Human Interface Device (HID) protocol"
+    recordedCallsFolder     "Access your recorded calls"
+    proximity               "Use devices that support Near Field Communication (NFC) services"
+    webcam                  "Use your webcam"
+END
+
+STRINGTABLE
+BEGIN
+    graphicsCaptureProgrammatic "Allows use of graphics capture"
+    userNotificationListener 
+                            "Allows an application to access the current state of notification settings"
+    userDataTasks           "Allows an application to access the current state of task settings"
+    userAccountInformation  "Access to your Account's username and picture"
+    usb                     "Access your USB connected devices"
+    systemManagement        "IoT System Adminstration"
+    spatialPerception       "See your current and past surroundings"
+    smsSend                 "Send SMS and MMS messages"
+    blockedChatMessages     "Read SMS and MMS messages that have been blocked by the Spam Filter app"
+    chat                    "Read and delete Text Messages"
+    codeGeneration          "Generate code dynamically"
+    voipCall                "Use your device's voice over IP (VoIP) services"
+    enterpriseDataPolicy    "Define enterprise-specific policies for your device"
+    inputInjectionBrokered  "Allows an application to programmatically inject various forms of input into the system, such as HID, touch, pen, keyboard, or mouse."
+    remoteSystem            "Allows the application to access the list of devices associated with the user's Microsoft account"
+END
+
+STRINGTABLE
+BEGIN
+    inProcessMediaExtension "In-process Media Extension"
+    webPlatformMediaExtension "Web Platform Media Extension"
+    previewStore            "Microsoft Store Preview Features"
+    confirmAppClose         "Close themselves and their own windows, and delay the closing of their app"
+    runFullTrust            "Uses all system resources"
+    previewUiComposition    "Preview the Windows UI Composition API to receive feedback"
+    slapiQueryLicenseValue  "Query software licensing policies"
+    localSystemServices     "Install a service on the machine that runs with maximum privileges"
+    packageManagement       "Manage other apps directly"
+    packageQuery            "Gather information about other apps"
+    packagePolicySystem     "Control system policies related to apps that are installed on the device"
+    storeAppInstall         "Store app installation"
+    appLicensing            "App Licensing"
+    broadFileSystemAccess   "File System"
+    allowElevation          "Run as administrator"
+    unvirtualizedResources  "Write registry entries and files that are not cleaned up on uninstall"
+END
+
+STRINGTABLE
+BEGIN
+    extendedExecution       "Allows the app to continue to perform operations for a period of time after entering the background"
+    appointmentsSystem      "Allows the app to read and modify all appointments on the user's calendar"
+    contactsSystem          "Allows the app to read information about contacts that have been designated as restricted or sensitive, and to modify existing contact information."
+    phoneCallSystem         "Allows the app to access all phone lines on the device"
+    userDataAccounts        "Allows the program to access user data such as email, contacts, calendar, etc."
+    userDataTasksSystem     "Access to system tasks"
+END
+
+#endif    // 英语(美国) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

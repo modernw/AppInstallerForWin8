@@ -1,0 +1,333 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|ARM">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM">
+      <Configuration>Release</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D417C165-3F17-40C4-8C7B-0F5AACEF62C5}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>AppInstaller</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+    <UseOfMfc>false</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+    <UseOfMfc>false</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>($SolutionDir)\AppLauncher;($SolutionDir)\PackageManagerAdd;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\AppLauncher;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\PackageManagerAdd;($SolutionDir)\Base64Img;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\Base64Img;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\ToastNotification;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\PriReader2;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\CertificateManager;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>($SolutionDir)\AppLauncher;($SolutionDir)\PackageManagerAdd;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\AppLauncher;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\PackageManagerAdd;($SolutionDir)\Base64Img;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\Base64Img;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\ToastNotification;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\PriReader2;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\CertificateManager;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>($SolutionDir)\AppLauncher;($SolutionDir)\PackageManagerAdd;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\AppLauncher;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\PackageManagerAdd;($SolutionDir)\Base64Img;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\Base64Img;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\ToastNotification;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\PriReader2;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\CertificateManager;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>($SolutionDir)\AppLauncher;($SolutionDir)\PackageManagerAdd;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\AppLauncher;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\PackageManagerAdd;($SolutionDir)\Base64Img;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\Base64Img;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\ToastNotification;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\PriReader2;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\CertificateManager;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>shlwapi.lib;dwmapi.lib;crypt32.lib;$(OutDir)PackageManager.lib;$(OutDir)AppLauncher.lib;$(OutDir)Base64Img.lib;$(OutDir)ToastNotification.lib;$(OutDir)PriReader2.lib;$(OutDir)CertificateManager.lib</AdditionalDependencies>
+      <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>shlwapi.lib;dwmapi.lib;crypt32.lib;$(OutDir)PackageManager.lib;$(OutDir)AppLauncher.lib;$(OutDir)Base64Img.lib;$(OutDir)ToastNotification.lib;$(OutDir)PriReader2.lib;$(OutDir)CertificateManager.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>shlwapi.lib;dwmapi.lib;crypt32.lib;$(OutDir)PackageManager.lib;$(OutDir)AppLauncher.lib;$(OutDir)Base64Img.lib;$(OutDir)ToastNotification.lib;$(OutDir)PriReader2.lib;$(OutDir)CertificateManager.lib</AdditionalDependencies>
+      <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
+    </Link>
+    <Manifest>
+      <EnableDpiAwareness>false</EnableDpiAwareness>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>shlwapi.lib;dwmapi.lib;crypt32.lib;$(OutDir)PackageManager.lib;$(OutDir)AppLauncher.lib;$(OutDir)Base64Img.lib;$(OutDir)ToastNotification.lib;$(OutDir)PriReader2.lib;$(OutDir)CertificateManager.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\AppLauncher\AppLauncher.h" />
+    <ClInclude Include="..\Base64Img\Base64Img.h" />
+    <ClInclude Include="..\CertificateManager\CertificateManager.h" />
+    <ClInclude Include="..\PackageManagerAdd\PackageManager.h" />
+    <ClInclude Include="..\PriReader2\PriReader2.h" />
+    <ClInclude Include="base64logo.h" />
+    <ClInclude Include="initread.h" />
+    <ClInclude Include="pkgcode.h" />
+    <ClInclude Include="pkginfo.h" />
+    <ClInclude Include="priread.h" />
+    <ClInclude Include="localeex.h" />
+    <ClInclude Include="res2.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="mainwnd.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="AppInstaller.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Drawing">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Drawing.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing.Design">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Drawing.Design.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Windows.Forms.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Xml.Linq.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AppLauncher\AppLauncher.vcxproj">
+      <Project>{285130bc-cbf1-4c7a-a28d-6f5ee6c68384}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Base64Img\Base64Img.vcxproj">
+      <Project>{911edc63-db20-4d61-9420-583a1c35427f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\CertificateManager\CertificateManager.vcxproj">
+      <Project>{22702832-c3fd-48e5-bc7d-3879ca50a2ed}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\PackageManagerAdd\AddPackageSample.vcxproj">
+      <Project>{59131ab7-2a7d-9a09-8223-174c3f5e0f57}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\PriReader2\PriReader2.vcxproj">
+      <Project>{b897969c-6ea9-4dfc-b7e0-94f1c6d94856}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\ToastNotification\ToastNotification.vcxproj">
+      <Project>{e10c6272-b876-4dc6-9e13-7ca646863b50}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\Button\Large\blank.png" />
+    <Image Include="res\Button\Large\blank_light.png" />
+    <Image Include="res\Button\Large\blank_press.png" />
+    <Image Include="res\Button\Large\cancel_window_light.png" />
+    <Image Include="res\Button\Large\cancel_window_normal.png" />
+    <Image Include="res\Button\Large\cancel_window_press.png" />
+    <Image Include="res\Button\Large\max_light.png" />
+    <Image Include="res\Button\Large\max_normal.png" />
+    <Image Include="res\Button\Large\max_press.png" />
+    <Image Include="res\Button\Large\min_light.png" />
+    <Image Include="res\Button\Large\min_normal.png" />
+    <Image Include="res\Button\Large\min_press.png" />
+    <Image Include="res\Button\Large\restore_light.png" />
+    <Image Include="res\Button\Large\restore_normal.png" />
+    <Image Include="res\Button\Large\restore_press.png" />
+    <Image Include="res\Button\Normal\blank.png" />
+    <Image Include="res\Button\Normal\blank_light.png" />
+    <Image Include="res\Button\Normal\blank_press.png" />
+    <Image Include="res\Button\Normal\cancel_back.png" />
+    <Image Include="res\Button\Normal\cancel_light.png" />
+    <Image Include="res\Button\Normal\cancel_press.png" />
+    <Image Include="res\Button\Normal\max_back.png" />
+    <Image Include="res\Button\Normal\max_light.png" />
+    <Image Include="res\Button\Normal\max_press.png" />
+    <Image Include="res\Button\Normal\min_back.png" />
+    <Image Include="res\Button\Normal\min_light.png" />
+    <Image Include="res\Button\Normal\min_press.png" />
+    <Image Include="res\Button\Normal\restore_back.png" />
+    <Image Include="res\Button\Normal\restore_light.png" />
+    <Image Include="res\Button\Normal\restore_press.png" />
+    <Image Include="res\Icons\FileIcon.ico" />
+    <Image Include="res\Icons\IconColor.ico" />
+    <Image Include="res\Icons\IconTitleBar.ico" />
+    <Image Include="res\Icons\IconWhite.ico" />
+    <Image Include="res\Icons\Main.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="res\manifest.xml" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
