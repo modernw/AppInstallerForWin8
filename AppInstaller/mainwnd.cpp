@@ -312,6 +312,7 @@ HRESULT SetCurrentAppUserModelID (PCWSTR appID)
 }
 
 void ProgressCallback (unsigned progress);
+void ToastPressCallback ();
 
 public ref class MainWnd: public Form
 {
@@ -988,7 +989,7 @@ public ref class MainWnd: public Form
 		std::wstring title = StrPrintFormatW (GetRCString_cpp (PAGE_4_TITLE).c_str (), m_pkgInfo.getPropertyName ().c_str ());
 		std::wstring text (L"");
 		if (GetLastErrorDetailTextLength ()) text += GetLastErrorDetailText ();
-		bool res = CreateToastNotification (m_idenName, title.c_str (), text.c_str (), NULL, m_pkgInfo.getPropertyLogoIStream ());
+		bool res = CreateToastNotification (m_idenName, title.c_str (), text.c_str (), &ToastPressCallback, m_pkgInfo.getPropertyLogoIStream ());
 	#ifdef _DEBUG
 		//MessageBox::Show (res ? "Toast has create! " : "Toast created failed! ");
 	#endif
@@ -1057,6 +1058,16 @@ public ref class MainWnd: public Form
 			)
 		);
 		this->setTaskbarProgress ((unsigned)value);
+	}
+	bool launchInstalledApp ()
+	{
+		if (page != 4) return false;
+		else
+		{
+			if (!reader.isPackageApplication ()) return false;
+		}
+		this->Button1_PressEvent ();
+		return true;
 	}
 };
 
@@ -1422,6 +1433,10 @@ void SetProgressDisplayWnd (MainWnd ^ptr)
 void ProgressCallback (unsigned progress)
 {
 	mainwndPtr->funcSetProgress (progress);
+}
+void ToastPressCallback ()
+{
+	mainwndPtr->launchInstalledApp ();
 }
 
 void OutputDebugStringFormatted (const wchar_t* format, ...)

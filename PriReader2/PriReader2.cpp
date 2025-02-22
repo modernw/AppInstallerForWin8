@@ -5,6 +5,27 @@
 #include "localeex.h"
 #include "PriReader2.h"
 
+template <typename CharT> std::basic_string <CharT> replace_substring
+(
+	const std::basic_string <CharT> &str,
+	const std::basic_string <CharT> &from,
+	const std::basic_string <CharT> &to
+)
+{
+	if (from.empty ()) return str;
+	std::basic_string  <CharT> result;
+	size_t pos = 0;
+	size_t start_pos;
+	while ((start_pos = str.find (from, pos)) != std::basic_string<CharT>::npos) 
+	{
+		result.append (str, pos, start_pos - pos);
+		result.append (to); 
+		pos = start_pos + from.length ();
+	}
+	result.append (str, pos, str.length () - pos);
+	return result;
+}
+
 int GetDPI ()
 {
 	HDC hDC = GetDC (NULL);
@@ -867,9 +888,23 @@ class PriReader
 			}
 			if (!isMatch)
 			{
+				std::string objstr = std::regex_replace (std::string (lpMsName), pattern, "");
+				std::string lpname2 = PathFindFileNameA (objstr.c_str ());
+				isMatch = LabelEqual (resname, lpname2);
+			}
+			if (!isMatch)
+			{
 				pugi::xml_attribute uriAttr = namedRes.attribute ("uri");
 				std::string resuri = uriAttr.as_string ();
-				isMatch = (InStr (resuri, resname) >= 0);
+				isMatch = (InStr (resuri, lpMsName, true) >= 0);
+			}
+			if (!isMatch)
+			{
+				pugi::xml_attribute uriAttr = namedRes.attribute ("uri");
+				std::string resuri = uriAttr.as_string ();
+				std::string objstr = std::regex_replace (std::string (lpMsName), pattern, "");
+				objstr = replace_substring <char> (objstr, "\\", "/");
+				isMatch = (InStr (resuri, objstr, true) >= 0);
 			}
 			if (isMatch)
 			{
@@ -997,6 +1032,12 @@ class PriReader
 			}
 			if (!isMatch)
 			{
+				std::wstring objstr = std::regex_replace (std::wstring (lpMsName), pattern, L"");
+				std::wstring lpname2 = PathFindFileNameW (objstr.c_str ());
+				isMatch = LabelEqual (resname, lpname2);
+			}
+			if (!isMatch)
+			{
 				pugi::xml_attribute uriAttr = namedRes.attribute ("uri");
 				std::wstring resuri = pugi::as_wide (uriAttr.as_string ());
 				isMatch = (InStr (resuri, lpMsName, true) >= 0);
@@ -1007,6 +1048,14 @@ class PriReader
 				pugi::xml_attribute uriAttr = namedRes.attribute ("uri");
 				std::wstring resuri = pugi::as_wide (uriAttr.as_string ());
 				isMatch = (InStr (resuri, lpname2, true) >= 0);
+			}
+			if (!isMatch)
+			{
+				pugi::xml_attribute uriAttr = namedRes.attribute ("uri");
+				std::wstring resuri = pugi::as_wide (uriAttr.as_string ());
+				std::wstring objstr = std::regex_replace (std::wstring (lpMsName), pattern, L"");
+				objstr = replace_substring <WCHAR> (objstr, L"\\", L"/");
+				isMatch = (InStr (resuri, objstr, true) >= 0);
 			}
 			if (isMatch)
 			{
@@ -1728,6 +1777,12 @@ class PriReader
 			LPSTR result = recFindStringValue (subtree, lpMsName, defaultLocaleCode);
 			if (result) return result;
 		}
+		for (pugi::xml_node subtree = resmap.child ("ResourceMapSubtree"); subtree; subtree = subtree.next_sibling ("ResourceMapSubtree"))
+		{
+			std::string resMapName = subtree.attribute ("name").as_string ();
+			LPSTR result = recFindStringValue (subtree, lpMsName, defaultLocaleCode);
+			if (result) return result;
+		}
 		return NULL;
 	}
 	// 获取到的指针需要 free 手动释放。
@@ -1737,6 +1792,14 @@ class PriReader
 		if (!root) return NULL;
 		pugi::xml_node resmap = root.child ("ResourceMap");
 		if (!resmap) return NULL;
+		for (pugi::xml_node subtree = resmap.child ("ResourceMapSubtree"); subtree; subtree = subtree.next_sibling ("ResourceMapSubtree"))
+		{
+			std::string resMapName = subtree.attribute ("name").as_string ();
+			if (LabelEqual (resMapName, "Files")) continue;
+			if (!LabelEqual (resMapName, "resources")) continue;
+			LPWSTR result = recFindStringValue (subtree, lpMsName, defaultLocaleCode);
+			if (result && lstrlenW (result) > 0) return result;
+		}
 		for (pugi::xml_node subtree = resmap.child ("ResourceMapSubtree"); subtree; subtree = subtree.next_sibling ("ResourceMapSubtree"))
 		{
 			std::string resMapName = subtree.attribute ("name").as_string ();
