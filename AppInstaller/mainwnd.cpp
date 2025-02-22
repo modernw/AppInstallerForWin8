@@ -827,17 +827,22 @@ public ref class MainWnd: public Form
 			setTextJS ("button-serial-1", rcString (BUTTON_5_SER1));
 		}
 		setPageJS (serial);
+		setPicBoxVisibilityJS (false);
 		if (serial > 1)
 		{
 			std::string res = m_pkgInfo.getPropertyLogoBase64 ();
-			if (!res.empty () && res.length () > 0)
+			if (m_pkgInfo.getPropertyLogoIStream () && !res.empty () && res.length () > 10)
 			{
 				std::string b64logo = res;
 				// MessageBox::Show (gcnew String ((std::string ("Base 64 String: ") + b64logo).c_str ()));
 				this->setStoreLogoJS (gcnew String (res.c_str ()));
 				setPicBoxVisibilityJS (true);
 			}
-			else setPicBoxVisibilityJS (false);
+			else
+			{
+				this->setStoreLogoJS ("./Libs/Images/StoreLogo.png");
+				setPicBoxVisibilityJS (false);
+			}
 		}
 		else
 		{
@@ -861,6 +866,17 @@ public ref class MainWnd: public Form
 		if (this->InvokeRequired)
 		{
 			this->Invoke (gcnew Action<String ^> (this, &MainWnd::setLogoBackgroundColorJS), color);
+		}
+		else
+		{
+			setLogoBackgroundColorJS (color);
+		}
+	}
+	void invokeSetColor (System::Drawing::Color ^color)
+	{
+		if (this->InvokeRequired)
+		{
+			this->Invoke (gcnew Action <String ^> (this, &MainWnd::setLogoBackgroundColorJS), ColorToHtml (*color));
 		}
 		else
 		{
@@ -919,8 +935,10 @@ public ref class MainWnd: public Form
 			// if (page < 0) invokeSetPage (2);
 			if (color.size () > 0)
 			{
+				if (LabelEqual (color [0].c_str (), L"transparent")) invokeSetColor (GetAeroColor ());
 				invokeSetColor (gcnew String (color [0].c_str ()));
 			}
+			else invokeSetColor (GetAeroColor ());
 			invokeSetPage (2);
 			if (m_silentMode)
 			{
