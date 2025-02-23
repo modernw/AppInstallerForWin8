@@ -175,6 +175,9 @@ typedef struct _CMDARGUMENT
 std::vector <CMDARGUMENT> cmdargs =
 {
 	{{L"", L"/", L"-"}, {L"HELP", L"?", L"H"}, {}, 5},
+	{{L"", L"/", L"-"}, {L"ReadInfo", L"Read", L"Info", L"ReadOnly", L"ReadInfoOnly"}, {}, 1},
+	{{L"", L"/", L"-"}, {L"LoadCertOnly", L"Load", L"LoadOnly", L"Cert", L"CertOnly", L"LoadCert"}, {}, 2},
+	{{L"", L"/", L"-"}, {L"InstallOnly", L"Install", L"AddPackageOnly", L"Add", L"AddOnly", L"InstallOnly"}, {}, 3}
 };
 
 // 编号为大于 0 的数，失败返回非正数
@@ -240,15 +243,26 @@ int GetCmdArgSerial (std::wstring cmdparam)
 }
 int GetCmdArgSerial (LPCWSTR cmdparam) { return GetCmdArgSerial (std::wstring (cmdparam)); }
 
+void ReadPackageInfo ();
 void TaskInstallPackage ();
 void TaskInstallPackages (size_t serial, size_t total);
+bool LoadCert ();
+bool InstallPackage ();
 void PrintHelpText ()
 {
 	wchar_t path [MAX_PATH] = {0};
 	GetModuleFileNameW (NULL, path, MAX_PATH);
 	std::wcout << "Usage: " << endl;
-	std::wcout << L'\t' << PathFindFileNameW (path) << L" <package_file_path>" << endl;
-	std::wcout << L"\t\t" << "Install packages." << endl;
+	std::wcout << L'\t' << PathFindFileNameW (path) << L" <package_file_path(-s)>" << endl;
+	std::wcout << L"\t\t" << "Install package(-s)." << endl;
+	std::wcout << L'\t' << PathFindFileNameW (path) << L" <package_file_path(-s)> [/readinfo] [/loadcert] [/install]" << endl;
+	std::wcout << L"\t\t" << "/readinfo" << endl;
+	std::wcout << L"\t\t\t" << "Read package(-s) infomation." << endl;
+	std::wcout << L"\t\t" << "/loadcert" << endl;
+	std::wcout << L"\t\t\t" << "Load certificate from package(-s)." << endl;
+	std::wcout << L"\t\t" << "/install" << endl;
+	std::wcout << L"\t\t\t" << "Install package(-s). (Only perform installation tasks)" << endl;
+	std::wcout << L"\t\t" << L"These command line parameters can be used cumulatively." << endl;
 	std::wcout << L'\t' << PathFindFileNameW (path) << L" /?" << endl;
 	std::wcout << L"\t\t" << "Show help." << endl;
 }
@@ -266,7 +280,7 @@ void middle (wstring s)
 bool ReadCommand (int argc, LPWSTR *argv)
 {
 	std::vector <std::wstring> vecObjSwFiles;
-	bool bDisplayHelp = false;
+	bool bDisplayHelp = false, bReadInfoOnly = false, bLoadCertOnly = false, bInstallOnly = false;
 	for (size_t cnt = 1; cnt < (size_t)argc; cnt ++)
 	{
 		int res = GetCmdArgSerial (argv [cnt]);
@@ -274,12 +288,20 @@ bool ReadCommand (int argc, LPWSTR *argv)
 		{
 			switch (res)
 			{
+				case 1: bReadInfoOnly = true; break;
+				case 2: bLoadCertOnly = true; break;
+				case 3: bInstallOnly = true; break;
 				case 5: bDisplayHelp = true; break;
 			}
 		}
 		else
 		{
 			if (IsFileExistsW (argv [cnt])) push_no_repeat (vecObjSwFiles, argv [cnt]);
+			else
+			{
+				wcerr << "Error: Unrecognized command line arguments: " << argv [cnt] << endl;
+				return false;
+			}
 		}
 	}
 	if (bDisplayHelp) // 处理命令参数提示
@@ -290,6 +312,20 @@ bool ReadCommand (int argc, LPWSTR *argv)
 	if (vecObjSwFiles.size () == 1)
 	{
 		g_pkgPath = vecObjSwFiles [0];
+		if (bReadInfoOnly)
+		{
+			if (g_reader.create (g_pkgPath)) ReadPackageInfo ();
+			else wcerr << "Error: Unavailable Package." << endl;
+		}
+		if (bLoadCertOnly)
+		{
+			LoadCert ();
+		}
+		if (bInstallOnly)
+		{
+			InstallPackage ();
+		}
+		if (bReadInfoOnly || bLoadCertOnly || bInstallOnly) return false;
 		return true;
 	}
 	else if (vecObjSwFiles.size () <= 0)
@@ -321,6 +357,7 @@ bool ReadCommand (int argc, LPWSTR *argv)
 				ss << (cnt + 1) << L" of " << vecObjSwFiles.size () << endl;
 				middle (ss.str ().c_str ());
 				std::wstring cmdline = L"\"" + std::wstring (path) + L"\" \"" + g_pkgPath + L'\"';
+				if (bReadInfoOnly) cmdline += L" /READINFO";
 				STARTUPINFOW si = {sizeof (STARTUPINFOW)};
 				PROCESS_INFORMATION pi = {0};
 				if (CreateProcessW (NULL, (LPWSTR)cmdline.c_str (), NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi))
@@ -349,9 +386,9 @@ void ProgressCallback (unsigned uPrecent)
 	wcout << StrPrintFormatW (GetRCString_cpp (PAGE_2_INSTALLING).c_str (), (int)uPrecent);
 }
 
-void TaskInstallPackage ()
+void ReadPackageInfo ()
 {
-	if (g_reader.create (g_pkgPath))
+	if (g_reader.isAvailable ())
 	{
 		wcout << GetRCString_cpp (PAGE_LOADING);
 		g_pkgInfo.create (g_reader);
@@ -362,7 +399,7 @@ void TaskInstallPackage ()
 		wcout << L"\t\t" << L"Publisher: " << g_pkgInfo.getIdentityPublisher () << endl;
 		wcout << L"\t\t" << L"Version: " << g_pkgInfo.getIdentityVersion ().toStringW () << endl;
 		std::vector <APPX_PACKAGE_ARCHITECTURE> archs;
-		wcout << L"\t\t" << L"Processor Architecture (" << g_pkgInfo.getIdentityProcessorArchitecture (archs) << ") ";
+		wcout << L"\t\t" << L"Processor Architecture (" << g_pkgInfo.getIdentityProcessorArchitecture (archs) << "): ";
 		if (archs.size () > 0)
 		{
 			std::wstring temp;
@@ -426,7 +463,8 @@ void TaskInstallPackage ()
 		{
 			for (auto it : caps)
 			{
-				wcout << L"\t\t" << GetRCString_cpp (CapabilitiesNameToID (it)) << endl;
+				wcout << L"\t\t" << GetRCString_cpp (CapabilitiesNameToID (it)) <<
+					L" ( " << it << L" )" << endl;
 			}
 		}
 		std::vector <DEPINFO> deps;
@@ -438,25 +476,46 @@ void TaskInstallPackage ()
 			wcout << L"\t\t\t" << L"Publisher: " << it.publisher << endl;
 			wcout << L"\t\t\t" << L"Version: " << it.versionMin.toStringW () << endl;
 		}
-		wcout << StrPrintFormatW (GetRCString_cpp (PAGE_2_TITLE).c_str (), g_pkgInfo.getPropertyName ().c_str ()) << endl;
-		wcout << GetRCString_cpp (PAGE_2_LOADCERT);
-		if (LoadCertFromSignedFile (g_pkgPath.c_str ())) wcout << L"Succeeded! " << endl;
-		else wcout << "Failed. " << endl;
-		wcout << GetRCString_cpp (PAGE_2_INSTALL);
-		InstallStatus ires = AddPackageFromPath (g_pkgPath.c_str (), &ProgressCallback);
-		wcout << endl;
-		if (ires == InstallStatus::Success)
-		{
-			wcout << "Install Succeeded! " << endl;
-		}
-		else
-		{
-			wcout << "\rInstall Failed. Message: " << GetLastErrorDetailText () << endl;
-		}
+	}
+}
+
+bool LoadCert ()
+{
+	bool res = false;
+	wcout << GetRCString_cpp (PAGE_2_LOADCERT);
+	if (res = LoadCertFromSignedFile (g_pkgPath.c_str ())) wcout << L"Succeeded! " << endl;
+	else wcout << "Failed. " << endl;
+	return res;
+}
+
+bool InstallPackage ()
+{
+	InstallStatus ires = AddPackageFromPath (g_pkgPath.c_str (), &ProgressCallback);
+	wcout << endl;
+	if (ires == InstallStatus::Success)
+	{
+		wcout << "Install Succeeded! " << endl;
 	}
 	else
 	{
-		wcout << "\rInstall Failed. Message: Unavailable Package." << endl;
+		wcerr << "\rError: Install Failed. Message: " << GetLastErrorDetailText () << endl;
+	}
+	return ires == InstallStatus::Success;
+}
+
+void TaskInstallPackage ()
+{
+	if (g_reader.create (g_pkgPath))
+	{
+		ReadPackageInfo ();
+		wcout << StrPrintFormatW (GetRCString_cpp (PAGE_2_TITLE).c_str (), g_pkgInfo.getPropertyName ().c_str ()) << endl;
+		wcout << GetRCString_cpp (PAGE_2_INSTALL);
+		LoadCert ();
+		InstallPackage ();
+	}
+	else
+	{
+		wcerr << "\rError: Install Failed. Message: Unavailable Package." << endl;
 	}
 }
 
