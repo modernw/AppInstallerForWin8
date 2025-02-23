@@ -96,6 +96,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>shlwapi.lib;dwmapi.lib;crypt32.lib;$(OutDir)PackageManager.lib;$(OutDir)AppLauncher.lib;$(OutDir)Base64Img.lib;$(OutDir)ToastNotification.lib;$(OutDir)PriReader2.lib;$(OutDir)CertificateManager.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -129,6 +130,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>shlwapi.lib;dwmapi.lib;crypt32.lib;$(OutDir)PackageManager.lib;$(OutDir)AppLauncher.lib;$(OutDir)Base64Img.lib;$(OutDir)ToastNotification.lib;$(OutDir)PriReader2.lib;$(OutDir)CertificateManager.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
