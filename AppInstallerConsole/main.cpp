@@ -15,7 +15,6 @@
 #include "resource.h"
 #include "res2.h"
 #include "PackageManager.h"
-#include "base64logo.h"
 #include "AppLauncher.h"
 #include "ToastNotification.h"
 #include "pkginfo.h"
@@ -509,8 +508,8 @@ void TaskInstallPackage ()
 	{
 		ReadPackageInfo ();
 		wcout << StrPrintFormatW (GetRCString_cpp (PAGE_2_TITLE).c_str (), g_pkgInfo.getPropertyName ().c_str ()) << endl;
-		wcout << GetRCString_cpp (PAGE_2_INSTALL);
 		LoadCert ();
+		wcout << GetRCString_cpp (PAGE_2_INSTALL);
 		InstallPackage ();
 	}
 	else

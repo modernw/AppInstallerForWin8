@@ -71,14 +71,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\AppLauncher;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\Base64Img;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\CertificateManager;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\PackageManagerAdd;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\PriReader2;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\ShoutcutCreater;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\ToastNotification;$(IncludePath)</IncludePath>
+    <IncludePath>E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\AppLauncher;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\CertificateManager;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\PackageManagerAdd;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\PriReader2;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\ShoutcutCreater;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\ToastNotification;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\AppLauncher;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\Base64Img;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\CertificateManager;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\PackageManagerAdd;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\PriReader2;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\ShoutcutCreater;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\ToastNotification;$(IncludePath)</IncludePath>
+    <IncludePath>E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\AppLauncher;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\CertificateManager;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\PackageManagerAdd;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\PriReader2;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\ShoutcutCreater;E:\Profiles\Bruce\Documents\Visual Studio 2015\Projects\AppInstaller\ToastNotification;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -95,7 +95,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>shlwapi.lib;dwmapi.lib;crypt32.lib;$(OutDir)PackageManager.lib;$(OutDir)AppLauncher.lib;$(OutDir)Base64Img.lib;$(OutDir)ToastNotification.lib;$(OutDir)PriReader2.lib;$(OutDir)CertificateManager.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>shlwapi.lib;dwmapi.lib;crypt32.lib;$(OutDir)PackageManager.lib;$(OutDir)AppLauncher.lib;$(OutDir)ToastNotification.lib;$(OutDir)PriReader2.lib;$(OutDir)CertificateManager.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
   </ItemDefinitionGroup>
@@ -129,7 +129,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>shlwapi.lib;dwmapi.lib;crypt32.lib;$(OutDir)PackageManager.lib;$(OutDir)AppLauncher.lib;$(OutDir)Base64Img.lib;$(OutDir)ToastNotification.lib;$(OutDir)PriReader2.lib;$(OutDir)CertificateManager.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>shlwapi.lib;dwmapi.lib;crypt32.lib;$(OutDir)PackageManager.lib;$(OutDir)AppLauncher.lib;$(OutDir)ToastNotification.lib;$(OutDir)PriReader2.lib;$(OutDir)CertificateManager.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
   </ItemDefinitionGroup>
@@ -152,7 +152,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="base64logo.h" />
     <ClInclude Include="initread.h" />
     <ClInclude Include="localeex.h" />
     <ClInclude Include="pkgcode.h" />

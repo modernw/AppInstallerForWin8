@@ -26,8 +26,6 @@ struct PackageInfomation
 		std::wstring name = L"";
 		std::wstring description = L"";
 		std::wstring publisher = L"";
-		std::string logoBase64 = "";
-		CComPtr <IStream> logoStream = NULL;
 	} properties;
 	std::vector <appmap> applications;
 	std::vector <std::wstring> capabilities;
@@ -59,37 +57,38 @@ struct PackageInfomation
 		reader.getIdentityProcessorArchitecture (this->identities.architectures);
 		reader.getResourceLanguages (this->resources.languages);
 		std::sort (this->resources.languages.begin (), this->resources.languages.end ());
-		if (pri.create (reader.getPriFileStream ()))
+		this->properties.name = reader.getPropertyName ();
+		this->properties.publisher = reader.getPropertyPublisher ();
+		this->properties.description = reader.getPropertyDescription ();
+		if (isMsResourceLabel (this->properties.name) ||
+			isMsResourceLabel (this->properties.publisher) ||
+			isMsResourceLabel (this->properties.description))
 		{
-			std::wstring temp = reader.getPropertyName ();
-			if (isMsResourceLabel (temp))
+			if (pri.create (reader.getPriFileStream ()))
 			{
-				std::wstring getres = pri.findStringValue (temp);
-				if (!getres.empty () && getres.length () > 0) temp = std::wstring (L"") + getres;
+				std::wstring temp = this->properties.name;
+				if (isMsResourceLabel (temp))
+				{
+					std::wstring getres = pri.findStringValue (temp);
+					if (!getres.empty () && getres.length () > 0) temp = std::wstring (L"") + getres;
+				}
+				this->properties.name = temp;
+				temp = this->properties.publisher;
+				if (isMsResourceLabel (temp))
+				{
+					std::wstring getres = pri.findStringValue (temp);
+					if (!getres.empty () && getres.length () > 0) temp = std::wstring (L"") + getres;
+				}
+				this->properties.description = temp;
+				temp = this->properties.description;
+				if (isMsResourceLabel (temp))
+				{
+					std::wstring getres = pri.findStringValue (temp);
+					if (!getres.empty () && getres.length () > 0) temp = std::wstring (L"") + getres;
+				}
+				this->properties.publisher = temp;
 			}
-			this->properties.name = temp;
-			temp = reader.getPropertyDescription ();
-			if (isMsResourceLabel (temp))
-			{
-				std::wstring getres = pri.findStringValue (temp);
-				if (!getres.empty () && getres.length () > 0) temp = std::wstring (L"") + getres;
-			}
-			this->properties.description = temp;
-			temp = reader.getPropertyPublisher ();
-			if (isMsResourceLabel (temp))
-			{
-				std::wstring getres = pri.findStringValue (temp);
-				if (!getres.empty () && getres.length () > 0) temp = std::wstring (L"") + getres;
-			}
-			this->properties.publisher = temp;
 		}
-		else
-		{
-			this->properties.name = reader.getPropertyName ();
-			this->properties.description = reader.getPropertyDescription ();
-			this->properties.publisher = reader.getPropertyPublisher ();
-		}
-		this->properties.logoBase64 = GetLogoBase64FromReader (reader, &this->properties.logoStream);
 		this->prerequisites.osMinVersion = reader.getPrerequisiteOSMinVersion ();
 		reader.getApplications (this->applications);
 		reader.getCapabilities (capabilities);
@@ -105,8 +104,6 @@ struct PackageInfomation
 		this->properties.name = L"";
 		this->properties.description = L"";
 		this->properties.publisher = L"";
-		this->properties.logoBase64 = "";
-		if (this->properties.logoStream) { this->properties.logoStream.Release (); this->properties.logoStream = nullptr; }
 		this->resources.languages.clear ();
 		this->prerequisites.osMinVersion = VERSION (0);
 		this->applications.clear ();
@@ -138,9 +135,6 @@ struct PackageInfomation
 	std::wstring getPropertyName () { return this->properties.name; }
 	std::wstring getPropertyDescription () { return this->properties.description; }
 	std::wstring getPropertyPublisher () { return this->properties.publisher; }
-	std::string getPropertyLogoBase64 () { return this->properties.logoBase64; }
-	// 无需手动释放
-	IStream *getPropertyLogoIStream () { return this->properties.logoStream; }
 	// 失败返回都为 0 的版本号
 	VERSION getPrerequisiteOSMinVersion () { return this->prerequisites.osMinVersion; }
 	// 判断当前包是否为应用包而不是资源包或依赖项。如果为捆绑包的话判断是否子包中存在应用包。
