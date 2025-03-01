@@ -28,6 +28,16 @@
 using namespace System;
 using namespace System::Windows::Forms;
 using namespace System::Threading;
+using namespace msclr::interop;
+
+int GetScreenWidth () 
+{
+	return GetSystemMetrics (SM_CXSCREEN);
+}
+int GetScreenHeight () 
+{
+	return GetSystemMetrics (SM_CYSCREEN);
+}
 
 #define toInt(_String_Managed_Object_) Int32::Parse (_String_Managed_Object_)
 #define toDouble(_String_Managed_Object_) Double::Parse (_String_Managed_Object_)
@@ -177,27 +187,23 @@ std::wstring StrPrintFormatW (LPCWSTR format, ...)
 
 void SetWebBrowserEmulation ()
 {
-	// 获取应用程序的可执行文件名
-	String ^appName = System::IO::Path::GetFileNameWithoutExtension (System::Windows::Forms::Application::ExecutablePath);
-	const wchar_t *appNameWChar = (const wchar_t *)(void *)System::Runtime::InteropServices::Marshal::StringToHGlobalUni (appName);
-	BOOL is64Bit = FALSE;
-	IsWow64Process (GetCurrentProcess (), &is64Bit);
+	String^ appName = System::IO::Path::GetFileName (Application::ExecutablePath); // 包含扩展名
+	IntPtr appNamePtr = System::Runtime::InteropServices::Marshal::StringToHGlobalUni (appName);
+	const wchar_t* appNameWChar = static_cast<const wchar_t*>(appNamePtr.ToPointer ());
+	BOOL isWow64 = FALSE;
+	IsWow64Process (GetCurrentProcess (), &isWow64);
 	HKEY hKey;
-	long regOpenResult = ERROR_SUCCESS;
-	if (is64Bit)
+	LPCWSTR keyPath = isWow64
+		? L"SOFTWARE\\WOW6432Node\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION"
+		: L"SOFTWARE\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION";
+	LONG result = RegOpenKeyExW (HKEY_CURRENT_USER, keyPath, 0, KEY_WRITE, &hKey);
+	if (result == ERROR_SUCCESS)
 	{
-		regOpenResult = RegOpenKeyExW (HKEY_CURRENT_USER, L"SOFTWARE\\WOW6432Node\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION", 0, KEY_WRITE, &hKey);
-	}
-	else
-	{
-		regOpenResult = RegOpenKeyExW (HKEY_CURRENT_USER, L"SOFTWARE\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION", 0, KEY_WRITE, &hKey);
-	}
-	if (regOpenResult == ERROR_SUCCESS)
-	{
-		DWORD ie11Mode = 11001;
-		RegSetValueExW (hKey, appNameWChar, 0, REG_DWORD, (const BYTE *)&ie11Mode, sizeof (DWORD));
+		DWORD value = 11001;
+		RegSetValueExW (hKey, appNameWChar, 0, REG_DWORD, reinterpret_cast<const BYTE*>(&value), sizeof (value));
 		RegCloseKey (hKey);
 	}
+	System::Runtime::InteropServices::Marshal::FreeHGlobal (appNamePtr);
 }
 
 #include <windows.h>
@@ -236,6 +242,17 @@ bool IsIeVersion10 ()
 	}
 	RegCloseKey (hKey);
 	return isIe10;
+}
+bool IsWindows10AndLater () 
+{
+	OSVERSIONINFOEX osvi = {0};
+	osvi.dwOSVersionInfoSize = sizeof (OSVERSIONINFOEX);
+	osvi.dwMajorVersion = 10;
+	DWORDLONG conditionMask = 0;
+	VER_SET_CONDITION (conditionMask, VER_MAJORVERSION, VER_GREATER_EQUAL);
+	if (VerifyVersionInfoW (&osvi, VER_MAJORVERSION, conditionMask)) return TRUE;
+	DWORD error = GetLastError ();
+	return (error == ERROR_OLD_WIN_VERSION) ? FALSE : FALSE;
 }
 
 size_t EnumerateFilesW (const std::wstring &directory, const std::wstring &filter,
@@ -313,6 +330,136 @@ HRESULT SetCurrentAppUserModelID (PCWSTR appID)
 
 void ProgressCallback (unsigned progress);
 void ToastPressCallback ();
+void OutputDebugStringFormatted (const wchar_t* format, ...);
+
+public ref class AppWindow: public Form
+{
+	private:
+	WebBrowser ^webUI;
+	std::vector <appmap> *appItems = new std::vector <appmap> ();
+	System::Collections::Generic::Dictionary <String ^, Delegate ^> ^jsFunctionHandlers;
+	public:
+	AppWindow () 
+	{
+		this->Visible = false;
+		jsFunctionHandlers = gcnew System::Collections::Generic::Dictionary <String ^, Delegate ^> ();
+		this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::None;
+		this->ShowInTaskbar = false;
+		this->TopMost = true;
+		this->Size = System::Drawing::Size (392, 494);
+		if (IsWindows10AndLater ()) this->MinimumSize = System::Drawing::Size (392, 226);
+		else this->MinimumSize = System::Drawing::Size (392, 129);
+		if (IsWindows10AndLater ()) this->MaximumSize = System::Drawing::Size (392, 522);
+		else this->MaximumSize = System::Drawing::Size (368, 394);
+		this->Text = rcString (APPLIST_WINTITLE);
+		webUI = gcnew WebBrowser ();
+		webUI->Dock = DockStyle::Fill;
+		this->Controls->Add (webUI);
+		String ^rootDir = System::IO::Path::GetDirectoryName (System::Windows::Forms::Application::ExecutablePath);
+		String ^htmlFilePath = System::IO::Path::Combine (rootDir, "HTML\\Libs\\AppList.html");
+		if (IsIeVersion10 ()) htmlFilePath = System::IO::Path::Combine (rootDir, "HTML\\Libs\\AppListIE10.html"); // IE10 (Win8) 特供
+		if (IsWindows10AndLater ()) htmlFilePath = System::IO::Path::Combine (rootDir, "HTML\\Libs\\AppListWin10.html"); // Windows 10 及以上版本的风格
+		webUI->Navigate (htmlFilePath);
+		webUI->ObjectForScripting = this;
+		this->webUI->IsWebBrowserContextMenuEnabled = false;
+		webUI->DocumentCompleted += gcnew WebBrowserDocumentCompletedEventHandler (this, &AppWindow::OnDocumentCompleted);
+		this->StartPosition = FormStartPosition::CenterScreen;
+		this->Deactivate += gcnew EventHandler (this, &AppWindow::eventOnDeactivate);
+	}
+	void OnDocumentCompleted (Object ^sender, WebBrowserDocumentCompletedEventArgs ^e)
+	{
+		CallJSFunction ("SetText", gcnew array <Object ^> {
+			"span-title",
+			rcString (APPLIST_TITLE)
+		});
+		CallJSFunction ("SetText", gcnew array <Object ^> {
+			"button-cancel-window",
+			rcString (APPLIST_BUTTON_CANCEL)
+		});
+		this->Visible = true;
+		Thread ^thread = gcnew Thread (gcnew ThreadStart (this, &AppWindow::InvokeRefreshAppItems));
+		thread->Start ();
+	}
+	void SendAppData (std::vector<appmap> apps)
+	{
+		if (appItems) delete appItems;
+		appItems = nullptr;
+		appItems = new std::vector <appmap> ();
+		for (auto it : apps)
+		{
+			appItems->push_back (it);
+		}
+		this->InvokeRefreshAppItems ();
+	}
+	void eventLaunchApp (String ^appModelUserId)
+	{
+		DWORD dwPId = 0;
+		LaunchApp ((marshal_as <std::wstring> (appModelUserId)).c_str (), &dwPId);
+		this->Close ();
+	}
+	void eventCancelWindow ()
+	{
+		if (this->IsHandleCreated) this->Close ();
+	}
+	void eventOnDeactivate (Object ^sender, EventArgs ^e)
+	{
+		if (this->IsHandleCreated) this->Close ();
+	}
+	~AppWindow ()
+	{
+		if (appItems) delete appItems;
+		appItems = nullptr;
+	}
+	private:
+	Object ^CallJSFunction (String ^functionName, ... array<Object^> ^args)
+	{
+		if (webUI->Document != nullptr)
+		{
+			try
+			{
+				return webUI->Document->InvokeScript (functionName, args);
+			}
+			catch (Exception^ ex)
+			{
+				MessageBox::Show ("Error calling JavaScript function: " + ex->Message);
+				return nullptr;
+			}
+		}
+		return nullptr;
+	}
+	void InvokeRefreshAppItems ()
+	{
+		if (this->InvokeRequired)
+		{
+			this->Invoke (gcnew Action (this, &AppWindow::RefreshAppItems));
+		}
+		else
+		{
+			RefreshAppItems ();
+		}
+	}
+	void RefreshAppItems ()
+	{
+		CallJSFunction ("ClearListItems", gcnew array <Object ^> { });
+		bool isWin10 = IsWindows10AndLater ();
+		size_t height = ((appItems->size ()) * (isWin10 ? 50 : 60)) + (isWin10 ? 206 : 120);
+		if (height < (isWin10 ? 522 : 394)) this->Height = height;
+		else this->Height = 522;
+		this->Left = (GetScreenWidth () - this->Width) / 2;
+		this->Top = (GetScreenHeight () - this->Height) / 2;
+		for (auto it : *appItems)
+		{
+			String ^colorStr = gcnew String (it [L"BackgroundColor"].c_str ());
+			if (LabelEqual (it [L"BackgroundColor"], L"transparent")) colorStr = ColorToHtml (GetAeroColor ());
+			CallJSFunction ("AddListItems", gcnew array <Object ^> {
+				gcnew String (it [L"AppUserModelID"].c_str ()),
+				gcnew String (it [L"Square44x44LogoBase64"].c_str ()),
+				colorStr,
+				gcnew String (it [L"DisplayName"].c_str ())
+			});
+		}
+	}
+};
 
 public ref class MainWnd: public Form
 {
@@ -432,7 +579,9 @@ public ref class MainWnd: public Form
 	{
 		this->Visible = true;
 		this->setLaunchWhenReadyJS (m_initConfig.readBoolValue (L"Settings", L"LaunchWhenReady", true));
+	#ifdef _DEBUG
 		if (IsIeVersion10 ()) hideFrameJS (false);
+	#endif
 		Thread ^thread = gcnew Thread (gcnew ThreadStart (this, &MainWnd::taskReadFile));
 		thread->Start ();
 		Thread ^thread2 = gcnew Thread (gcnew ThreadStart (this, &MainWnd::taskCountDarkMode));
@@ -468,6 +617,7 @@ public ref class MainWnd: public Form
 				thread->SetApartmentState (ApartmentState::STA);
 				thread->Start ();
 			} break;
+			case 3: break;
 			case 4:
 			{
 				// this->setButtonDisabledJS (true);
@@ -481,6 +631,17 @@ public ref class MainWnd: public Form
 					m_pkgInfo.getApplicationUserModelIDs (ids);
 					DWORD dwPId = 0;
 					if (ids.size () == 1) LaunchApp (ids [0].c_str (), &dwPId);
+					else if (ids.size () > 1)
+					{
+						AppWindow ^appWnd = gcnew AppWindow ();
+						std::vector <appmap> apps;
+						m_pkgInfo.getApplications (apps);
+						appWnd->SendAppData (apps);
+						appWnd->StartPosition = FormStartPosition::CenterScreen;
+						//appWnd->Owner = this;
+						appWnd->Show ();
+						//appWnd->ShowDialog ();
+					}
 				}
 				// this->setButtonDisabledJS (false);
 			} break;
@@ -488,6 +649,17 @@ public ref class MainWnd: public Form
 			{
 				this->Close ();
 			} break;
+		}
+	}
+	void invokeEventOnPress_button1 ()
+	{
+		if (this->InvokeRequired)
+		{
+			this->Invoke (gcnew Action (this, &MainWnd::eventOnPress_button1));
+		}
+		else
+		{
+			eventOnPress_button1 ();
 		}
 	}
 	void eventOnPress_button2 ()
@@ -830,18 +1002,21 @@ public ref class MainWnd: public Form
 		setPicBoxVisibilityJS (false);
 		if (serial > 1)
 		{
-			std::string res = m_pkgInfo.getPropertyLogoBase64 ();
-			if (m_pkgInfo.getPropertyLogoIStream () && !res.empty () && res.length () > 10)
+			if (serial = 2)
 			{
-				std::string b64logo = res;
-				// MessageBox::Show (gcnew String ((std::string ("Base 64 String: ") + b64logo).c_str ()));
-				this->setStoreLogoJS (gcnew String (res.c_str ()));
-				setPicBoxVisibilityJS (true);
-			}
-			else
-			{
-				this->setStoreLogoJS ("./Libs/Images/StoreLogo.png");
-				setPicBoxVisibilityJS (false);
+				std::string res = m_pkgInfo.getPropertyLogoBase64 ();
+				if (m_pkgInfo.getPropertyLogoIStream () && !res.empty () && res.length () > 10)
+				{
+					std::string b64logo = res;
+					// MessageBox::Show (gcnew String ((std::string ("Base 64 String: ") + b64logo).c_str ()));
+					this->setStoreLogoJS (gcnew String (res.c_str ()));
+					setPicBoxVisibilityJS (true);
+				}
+				else
+				{
+					this->setStoreLogoJS ("./Libs/Images/StoreLogo.png");
+					setPicBoxVisibilityJS (false);
+				}
 			}
 		}
 		else
@@ -896,6 +1071,17 @@ public ref class MainWnd: public Form
 			pTaskbarList->Release ();
 		}
 	}
+	void invokeSetTaskbarProgress (int value)
+	{
+		if (this->InvokeRequired)
+		{
+			this->Invoke (gcnew Action <int> (this, &MainWnd::setTaskbarProgress), value);
+		}
+		else
+		{
+			setTaskbarProgress (value);
+		}
+	}
 	void clearTaskbarProgress ()
 	{
 		IntPtr hwnd = this->Handle;
@@ -909,6 +1095,17 @@ public ref class MainWnd: public Form
 			pTaskbarList->SetProgressState ((HWND)hwnd.ToPointer (), TBPF_NOPROGRESS);
 			// 释放 ITaskbarList3 接口
 			pTaskbarList->Release ();
+		}
+	}
+	void invokeClearTaskbarProgress ()
+	{
+		if (this->InvokeRequired)
+		{
+			this->Invoke (gcnew Action (this, &MainWnd::clearTaskbarProgress));
+		}
+		else
+		{
+			clearTaskbarProgress ();
 		}
 	}
 	bool invokeGetLaunchWhenReady ()
@@ -985,10 +1182,7 @@ public ref class MainWnd: public Form
 		if (status == InstallStatus::Success)
 		{
 			invokeSetPage (4);
-			if (this->invokeGetLaunchWhenReady ())
-			{
-				if (reader.isPackageApplication ()) this->eventOnPress_button1 (); // 用于启用 APP
-			}
+			if (m_pkgInfo.applications.size () == 1 && !m_silentMode) this->eventOnPress_button1 (); // 用于启用 APP
 			Thread ^closeThread = gcnew Thread (gcnew ThreadStart (this, &MainWnd::taskCountCancel));
 			closeThread->IsBackground = true;
 			closeThread->Start ();
@@ -1003,7 +1197,7 @@ public ref class MainWnd: public Form
 				closeThread->Start ();
 			}
 		}
-		this->clearTaskbarProgress ();
+		this->invokeClearTaskbarProgress ();
 		std::wstring title = StrPrintFormatW (GetRCString_cpp (PAGE_4_TITLE).c_str (), m_pkgInfo.getPropertyName ().c_str ());
 		std::wstring text (L"");
 		if (GetLastErrorDetailTextLength ()) text += GetLastErrorDetailText ();
@@ -1015,7 +1209,12 @@ public ref class MainWnd: public Form
 	}
 	void taskCountCancel ()
 	{
-		for (char cnt = 0; cnt < 100; cnt ++)
+		int size = (int)m_pkgInfo.applications.size ();
+		if (size < 1) size = 1;
+		if (size > 5) size = 5;
+		if (m_silentMode) size = 1; // 不耽误时间
+		int tcnt = size * 100;
+		for (int cnt = 0; cnt < tcnt; cnt ++)
 		{
 			if (!this->IsHandleCreated) break;
 			Thread::Sleep (50);
@@ -1052,7 +1251,7 @@ public ref class MainWnd: public Form
 	}
 	public:
 	[STAThread]
-	void Button1_PressEvent () { eventOnPress_button1 (); }
+	void Button1_PressEvent () { invokeEventOnPress_button1 (); }
 	[STAThread]
 	void Button2_PressEvent () { eventOnPress_button2 (); }
 	[STAThread]
@@ -1075,7 +1274,7 @@ public ref class MainWnd: public Form
 				StrPrintFormatW (GetRCString_cpp (PAGE_2_INSTALLING).c_str (), (int)value).c_str ()
 			)
 		);
-		this->setTaskbarProgress ((unsigned)value);
+		this->invokeSetTaskbarProgress ((unsigned)value);
 	}
 	bool launchInstalledApp ()
 	{

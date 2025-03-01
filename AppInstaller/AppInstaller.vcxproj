@@ -138,6 +138,11 @@
       <AdditionalDependencies>shlwapi.lib;dwmapi.lib;crypt32.lib;$(OutDir)PackageManager.lib;$(OutDir)AppLauncher.lib;$(OutDir)Base64Img.lib;$(OutDir)ToastNotification.lib;$(OutDir)PriReader2.lib;$(OutDir)CertificateManager.lib</AdditionalDependencies>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
+    <Manifest>
+      <AdditionalManifestFiles>app.manifest %(AdditionalManifestFiles)</AdditionalManifestFiles>
+      <InputResourceManifests>
+      </InputResourceManifests>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <ClCompile>
@@ -191,6 +196,9 @@
     </Link>
     <Manifest>
       <EnableDpiAwareness>false</EnableDpiAwareness>
+      <AdditionalManifestFiles>app.manifest %(AdditionalManifestFiles)</AdditionalManifestFiles>
+      <InputResourceManifests>
+      </InputResourceManifests>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
@@ -252,6 +260,7 @@
     <ResourceCompile Include="AppInstaller.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="CustomMarshalers" />
     <Reference Include="System" />
     <Reference Include="System.Drawing">
       <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Drawing.dll</HintPath>

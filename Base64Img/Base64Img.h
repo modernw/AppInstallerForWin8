@@ -14,3 +14,5 @@ typedef HANDLE HISTREAM;
 typedef char *LPSTR;
 
 extern "C" BASE64IMG_API LPSTR StreamToBase64 (HISTREAM ifile);
+
+extern "C" BASE64IMG_API LPWSTR StreamToBase64W (HISTREAM ifile);

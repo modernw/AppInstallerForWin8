@@ -323,7 +323,8 @@ std::vector <std::wstring> applicationItems =
 	L"DisplayName",
 	L"BackgroundColor",
 	L"ForegroundText",
-	L"ShortName"
+	L"ShortName",
+	L"Square44x44Logo"
 };
 typedef std::wstring strlabel, StringLabel;
 std::wstring StringTrim (const std::wstring &str)

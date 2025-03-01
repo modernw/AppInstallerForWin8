@@ -89,9 +89,40 @@ struct PackageInfomation
 			this->properties.description = reader.getPropertyDescription ();
 			this->properties.publisher = reader.getPropertyPublisher ();
 		}
-		this->properties.logoBase64 = GetLogoBase64FromReader (reader, &this->properties.logoStream);
+		this->properties.logoBase64 = GetLogoBase64FromReader (reader, &this->properties.logoStream, &pri);
 		this->prerequisites.osMinVersion = reader.getPrerequisiteOSMinVersion ();
 		reader.getApplications (this->applications);
+		for (auto &it : this->applications)
+		{
+			for (auto &sit : it)
+			{
+				if (LabelEqual (sit.first, L"AppUserModelID")) continue;
+				else if (LabelEqual (sit.first, L"Id")) continue;
+				else if (LabelEqual (sit.first, L"DisplayName"))
+				{
+					if (isMsResourceLabel (sit.second))
+					{
+						std::wstring temp (L"");
+						temp += pri.findStringValue (sit.second);
+						it [L"DisplayName"] = temp;
+					}
+				}
+				else if (LabelEqual (sit.first, L"ShortName"))
+				{
+					if (isMsResourceLabel (sit.second))
+					{
+						std::wstring temp (L"");
+						temp += pri.findStringValue (sit.second);
+						it [L"ShortName"] = temp;
+					}
+				}
+				else if (LabelEqual (sit.first, L"Square44x44Logo"))
+				{
+					sit.second = pri.findFilePathValue (sit.second);
+					it [strlabel (L"Square44x44LogoBase64")] = GetBase64FromPathW (reader, sit.second.c_str (), NULL, &pri);
+				}
+			}
+		}
 		reader.getCapabilities (capabilities);
 		reader.getDependencies (dependencies);
 		return reader.isAvailable ();

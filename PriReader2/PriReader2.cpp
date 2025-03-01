@@ -1652,6 +1652,10 @@ class PriReader
 		if (xmlreader) delete xmlreader;
 		xmlreader = nullptr;
 		if (IsFileExists (txmlpath)) DeleteFileW (txmlpath.c_str ());
+		if (IsFileExists (txmlpath.substr (0, txmlpath.length () - 4)))
+		{
+			DeleteFileW (txmlpath.substr (0, txmlpath.length () - 4).c_str ());
+		}
 		txmlpath = L"";
 		prifile = L"";
 	}
@@ -1760,6 +1764,10 @@ class PriReader
 		}
 		bool res = this->create (tempPriFile);
 		DeleteFileW (tempPriFile.c_str ());
+		if (IsFileExists (tempPriFile.substr (0, tempPriFile.length () - 4)))
+		{
+			DeleteFileW (tempPriFile.substr (0, tempPriFile.length () - 4).c_str ());
+		}
 		return res;
 	}
 	// 获取到的指针需要 free 手动释放。
@@ -1905,7 +1913,7 @@ void DestroyPriReader (HPRIREADER hpr)
 {
 	if (!hpr) return;
 	PriReader *ptr = (PriReader *)hpr;
-	delete hpr;
+	delete ptr;
 	return;
 }
 // 返回的字符串只能肯定不是宽字符串，而不确定具体的编码方式（可能为 ANSI 也有可能为 UTF-8）

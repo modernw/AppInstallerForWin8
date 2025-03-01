@@ -1,6 +1,5 @@
 // Microsoft Visual C++ generated resource script.
 //
-#include <Windows.h>
 #include "resource.h"
 /////////////////////////////////////////////////////////////////////////////
 // 中文(简体，中国) resources
@@ -115,8 +114,8 @@ IDR_MANIFEST1           RT_MANIFEST             "res/manifest.xml"
 //
 
 IDR_VERSION_ZH_CN VERSIONINFO
- FILEVERSION 1,0,1,7
- PRODUCTVERSION 1,0,1,7
+ FILEVERSION 1,0,1,9
+ PRODUCTVERSION 1,0,1,9
  FILEFLAGSMASK 0x0L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -133,9 +132,9 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Bruce Winter"
             VALUE "FileDescription", "应用安装程序"
-            VALUE "FileVersion", "1.0.1.7"
+            VALUE "FileVersion", "1.0.1.9"
             VALUE "LegalCopyright", "\\xA9Bruce Winter.  All rights reserved."
-            VALUE "ProductVersion", "1.0.1.7"
+            VALUE "ProductVersion", "1.0.1.9"
         END
     END
     BLOCK "VarFileInfo"
@@ -145,8 +144,8 @@ BEGIN
 END
 
 IDR_VERSION_EN_US VERSIONINFO
- FILEVERSION 1,0,1,7
- PRODUCTVERSION 1,0,1,7
+ FILEVERSION 1,0,1,9
+ PRODUCTVERSION 1,0,1,9
  FILEFLAGSMASK 0x0L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -163,9 +162,9 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Bruce Winter"
             VALUE "FileDescription", "App Installer"
-            VALUE "FileVersion", "1.0.1.7"
+            VALUE "FileVersion", "1.0.1.9"
             VALUE "LegalCopyright", "\\xA9Bruce Winter.  All rights reserved."
-            VALUE "ProductVersion", "1.0.1.7"
+            VALUE "ProductVersion", "1.0.1.9"
         END
     END
     BLOCK "VarFileInfo"
@@ -239,6 +238,9 @@ BEGIN
     PAGE_1_APP              "Microsoft Store 应用"
     PAGE_2_LOADING          "请稍候..."
     PAGE_2_INSTALLING       "正在安装 %d%%"
+    APPLIST_WINTITLE        "应用选择列表"
+    APPLIST_TITLE           "你要从哪个应用开始？"
+    APPLIST_BUTTON_CANCEL   "取消"
     CLHELP_1                "命令行参数说明：\n\n"
     CLHELP_2                "\t/?, /Help\n\t显示帮助窗口 (命令行参数说明)\n\n"
     CLHELP_3                "\t/DisableFrame\n\t禁止使用自绘的窗口边框\n\n"
@@ -404,6 +406,9 @@ BEGIN
     PAGE_1_APP              "Microsoft Store App"
     PAGE_2_LOADING          "Please wait..."
     PAGE_2_INSTALLING       "Installing %d%%"
+    APPLIST_WINTITLE        "App Select List"
+    APPLIST_TITLE           "Which app do you want to start with?"
+    APPLIST_BUTTON_CANCEL   "Cancel"
     CLHELP_1                "Usage:\n\n"
     CLHELP_2                "\t/?, /Help\n\tDisplay help window (command line parameter description).\n\n"
     CLHELP_3                "\t/DisableFrame\n\tDisable the use of self-drawn window borders.\n\n"

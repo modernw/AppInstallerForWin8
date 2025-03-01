@@ -316,7 +316,7 @@ class PriReader
 	PriReader (): priReader (NULL) {}
 	void destroy ()
 	{
-		if (!priReader) return;
+		if (priReader == NULL) return;
 		DestroyPriReader (priReader);
 		priReader = NULL;
 	}
