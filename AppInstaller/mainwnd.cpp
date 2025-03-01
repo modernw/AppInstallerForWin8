@@ -341,7 +341,25 @@ public ref class AppWindow: public Form
 	public:
 	AppWindow () 
 	{
-		this->Visible = false;
+		BOOL transitionsEnabled = FALSE;
+		HRESULT hr = DwmSetWindowAttribute (
+			reinterpret_cast <HWND> (this->Handle.ToPointer ()),
+			DWMWA_TRANSITIONS_FORCEDISABLED,
+			&transitionsEnabled,
+			sizeof (transitionsEnabled)
+		);
+		DWMNCRENDERINGPOLICY dwmplc = DWMNCRP_ENABLED;
+		hr = DwmSetWindowAttribute (
+			reinterpret_cast <HWND> (this->Handle.ToPointer ()),
+			DWMWA_NCRENDERING_POLICY,
+			&dwmplc,
+			sizeof (dwmplc)
+		);
+		MARGINS margins = {-1, -1, -1, -1};
+		hr = DwmExtendFrameIntoClientArea (
+			reinterpret_cast <HWND> (this->Handle.ToPointer ()),
+			&margins
+		);
 		jsFunctionHandlers = gcnew System::Collections::Generic::Dictionary <String ^, Delegate ^> ();
 		this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::None;
 		this->ShowInTaskbar = false;
@@ -376,7 +394,6 @@ public ref class AppWindow: public Form
 			"button-cancel-window",
 			rcString (APPLIST_BUTTON_CANCEL)
 		});
-		this->Visible = true;
 		Thread ^thread = gcnew Thread (gcnew ThreadStart (this, &AppWindow::InvokeRefreshAppItems));
 		thread->Start ();
 	}
@@ -1002,7 +1019,7 @@ public ref class MainWnd: public Form
 		setPicBoxVisibilityJS (false);
 		if (serial > 1)
 		{
-			if (serial = 2)
+			if (serial == 2)
 			{
 				std::string res = m_pkgInfo.getPropertyLogoBase64 ();
 				if (m_pkgInfo.getPropertyLogoIStream () && !res.empty () && res.length () > 10)
