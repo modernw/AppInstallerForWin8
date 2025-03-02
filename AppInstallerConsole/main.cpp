@@ -516,6 +516,7 @@ void TaskInstallPackage ()
 	{
 		wcerr << "\rError: Install Failed. Message: Unavailable Package." << endl;
 	}
+
 }
 
 void TaskInstallPackages (size_t serial, size_t total)

@@ -241,9 +241,12 @@ BEGIN
     APPLIST_WINTITLE        "应用选择列表"
     APPLIST_TITLE           "你要从哪个应用开始？"
     APPLIST_BUTTON_CANCEL   "取消"
+    SHORTCUT_SETTINGS       "设置"
+    SHORTCUT_UNINSTALL      "删除 应用安装程序"
+    SHORTCUT_UPDATE         "更新 App Installer"
     CLHELP_1                "命令行参数说明：\n\n"
     CLHELP_2                "\t/?, /Help\n\t显示帮助窗口 (命令行参数说明)\n\n"
-    CLHELP_3                "\t/DisableFrame\n\t禁止使用自绘的窗口边框\n\n"
+    CLHELP_3                "\t/DisableFrame\n\t禁止使用自绘的窗口边框 (仅用于易程序)\n\n"
     CLHELP_4                "\t/Win32Window\n\t不使用 WebUI，改用 Win32 窗口\n\n"
     CLHELP_5                "\t/Silent\n\t一般情况下会自动安装，安装完成后在几秒后结束\n\n"
     CLHELP_6                "\t/VerySilent\n\t静默安装，安装时不会显示任何信息，安装任务完成后自动结束\n\n"
@@ -269,6 +272,9 @@ END
 STRINGTABLE
 BEGIN
     CLHELP_7                "\t/NoGUI\n\t使用 WSAppPkgIns 安装。安装时会弹出命令行窗口，安装完成后需手动关闭窗口\n\n"
+    CLHELP_8                "\t/EnableFrame\n\t使用自绘的窗口边框 (仅用于易程序)\n\n"
+    CLHELP_9                "\t/EProgram\n\t使用易的 WebUI\n\n"
+    CLHELP_10               "\t/Console\n\t使用命令行版的 应用安装程序 (其实建议直接使用 AppInstallerConsole.exe 才更方便看输入输出)\n\n"
 END
 
 STRINGTABLE
@@ -409,9 +415,12 @@ BEGIN
     APPLIST_WINTITLE        "App Select List"
     APPLIST_TITLE           "Which app do you want to start with?"
     APPLIST_BUTTON_CANCEL   "Cancel"
+    SHORTCUT_SETTINGS       "Settings"
+    SHORTCUT_UNINSTALL      "Delete App Installer"
+    SHORTCUT_UPDATE         "Update App Installer"
     CLHELP_1                "Usage:\n\n"
     CLHELP_2                "\t/?, /Help\n\tDisplay help window (command line parameter description).\n\n"
-    CLHELP_3                "\t/DisableFrame\n\tDisable the use of self-drawn window borders.\n\n"
+    CLHELP_3                "\t/DisableFrame\n\tDisable the use of self-drawn window borders. (Only use for E program.)\n\n"
     CLHELP_4                "\t/Win32Window\n\tDo not use WebUI, use Win32 window instead.\n\n"
     CLHELP_5                "\t/Silent\n\tUnder normal circumstances, it will be automatically installed and will end after a few seconds.\n\n"
     CLHELP_6                "\t/VerySilent\n\tSilent installation, no information will be displayed during installation, and the installation task will automatically end after completion.\n\n"
@@ -429,6 +438,9 @@ END
 STRINGTABLE
 BEGIN
     CLHELP_7                "\t/NoGUI\n\tUse WSAppPkgIns to install. A command line window will pop up during installation, and you need to manually close the window after installation.\n\n"
+    CLHELP_8                "\t/EnableFrame\n\tEnable the use of self-drawn window borders. (Only use for E program.)\n\n"
+    CLHELP_9                "\t/EProgram\n\tUse E WebUI program.\n\n"
+    CLHELP_10               "\t/Console\n\tUse the command line version of the application installer (it is actually recommended to use AppInstallerConsole.exe directly for easier viewing of input and output)\n\n"
 END
 
 STRINGTABLE

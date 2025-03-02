@@ -115,8 +115,8 @@ IDR_MANIFEST1           RT_MANIFEST             "res/manifest.xml"
 //
 
 IDR_VERSION_ZH_CN VERSIONINFO
- FILEVERSION 1,0,1,7
- PRODUCTVERSION 1,0,1,7
+ FILEVERSION 1,0,1,9
+ PRODUCTVERSION 1,0,1,9
  FILEFLAGSMASK 0x0L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -133,9 +133,9 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Bruce Winter"
             VALUE "FileDescription", "应用安装程序"
-            VALUE "FileVersion", "1.0.1.7"
+            VALUE "FileVersion", "1.0.1.9"
             VALUE "LegalCopyright", "\\xA9Bruce Winter.  All rights reserved."
-            VALUE "ProductVersion", "1.0.1.7"
+            VALUE "ProductVersion", "1.0.1.9"
         END
     END
     BLOCK "VarFileInfo"
@@ -145,8 +145,8 @@ BEGIN
 END
 
 IDR_VERSION_EN_US VERSIONINFO
- FILEVERSION 1,0,1,7
- PRODUCTVERSION 1,0,1,7
+ FILEVERSION 1,0,1,9
+ PRODUCTVERSION 1,0,1,9
  FILEFLAGSMASK 0x0L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -163,9 +163,9 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Bruce Winter"
             VALUE "FileDescription", "App Installer"
-            VALUE "FileVersion", "1.0.1.7"
+            VALUE "FileVersion", "1.0.1.9"
             VALUE "LegalCopyright", "\\xA9Bruce Winter.  All rights reserved."
-            VALUE "ProductVersion", "1.0.1.7"
+            VALUE "ProductVersion", "1.0.1.9"
         END
     END
     BLOCK "VarFileInfo"

@@ -166,6 +166,46 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\Button\Large\blank.png" />
+    <Image Include="res\Button\Large\blank_light.png" />
+    <Image Include="res\Button\Large\blank_press.png" />
+    <Image Include="res\Button\Large\cancel_window_light.png" />
+    <Image Include="res\Button\Large\cancel_window_normal.png" />
+    <Image Include="res\Button\Large\cancel_window_press.png" />
+    <Image Include="res\Button\Large\max_light.png" />
+    <Image Include="res\Button\Large\max_normal.png" />
+    <Image Include="res\Button\Large\max_press.png" />
+    <Image Include="res\Button\Large\min_light.png" />
+    <Image Include="res\Button\Large\min_normal.png" />
+    <Image Include="res\Button\Large\min_press.png" />
+    <Image Include="res\Button\Large\restore_light.png" />
+    <Image Include="res\Button\Large\restore_normal.png" />
+    <Image Include="res\Button\Large\restore_press.png" />
+    <Image Include="res\Button\Normal\blank.png" />
+    <Image Include="res\Button\Normal\blank_light.png" />
+    <Image Include="res\Button\Normal\blank_press.png" />
+    <Image Include="res\Button\Normal\cancel_back.png" />
+    <Image Include="res\Button\Normal\cancel_light.png" />
+    <Image Include="res\Button\Normal\cancel_press.png" />
+    <Image Include="res\Button\Normal\max_back.png" />
+    <Image Include="res\Button\Normal\max_light.png" />
+    <Image Include="res\Button\Normal\max_press.png" />
+    <Image Include="res\Button\Normal\min_back.png" />
+    <Image Include="res\Button\Normal\min_light.png" />
+    <Image Include="res\Button\Normal\min_press.png" />
+    <Image Include="res\Button\Normal\restore_back.png" />
+    <Image Include="res\Button\Normal\restore_light.png" />
+    <Image Include="res\Button\Normal\restore_press.png" />
+    <Image Include="res\Icons\FileIcon.ico" />
+    <Image Include="res\Icons\IconColor.ico" />
+    <Image Include="res\Icons\IconTitleBar.ico" />
+    <Image Include="res\Icons\IconWhite.ico" />
+    <Image Include="res\Icons\Main.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="res\manifest.xml" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

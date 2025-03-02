@@ -47,4 +47,114 @@
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\Icons\Main.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Icons\FileIcon.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Icons\IconWhite.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Icons\IconColor.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Button\Normal\blank.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Button\Normal\blank_light.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Button\Normal\blank_press.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Button\Normal\min_back.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Button\Normal\min_light.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Button\Normal\min_press.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Button\Normal\max_back.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Button\Normal\max_light.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Button\Normal\max_press.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Button\Normal\restore_back.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Button\Normal\restore_light.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Button\Normal\restore_press.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Button\Normal\cancel_back.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Button\Normal\cancel_light.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Button\Normal\cancel_press.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Button\Large\blank.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Button\Large\blank_light.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Button\Large\blank_press.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Button\Large\min_normal.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Button\Large\min_light.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Button\Large\min_press.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Button\Large\max_normal.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Button\Large\max_light.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Button\Large\max_press.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Button\Large\restore_normal.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Button\Large\restore_light.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Button\Large\restore_press.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Button\Large\cancel_window_normal.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Button\Large\cancel_window_light.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Button\Large\cancel_window_press.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Icons\IconTitleBar.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="res\manifest.xml" />
+  </ItemGroup>
 </Project>

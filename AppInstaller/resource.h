@@ -1142,6 +1142,9 @@
 #define APPLIST_WINTITLE                324
 #define APPLIST_TITLE                   325
 #define APPLIST_BUTTON_CANCEL           326
+#define SHORTCUT_SETTINGS               327
+#define SHORTCUT_UNINSTALL              328
+#define SHORTCUT_UPDATE                 329
 #define CLHELP_1                        330
 #define CLHELP_2                        331
 #define CLHELP_3                        332
@@ -1149,6 +1152,9 @@
 #define CLHELP_5                        334
 #define CLHELP_6                        335
 #define CLHELP_7                        336
+#define CLHELP_8                        337
+#define CLHELP_9                        338
+#define CLHELP_10                       339
 #define INITWIDTH                       400
 #define INITHEIGHT                      401
 #define LIMITWIDTH                      402

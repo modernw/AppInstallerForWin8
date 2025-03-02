@@ -341,6 +341,7 @@ public ref class AppWindow: public Form
 	public:
 	AppWindow () 
 	{
+		this->Visible = false;
 		BOOL transitionsEnabled = FALSE;
 		HRESULT hr = DwmSetWindowAttribute (
 			reinterpret_cast <HWND> (this->Handle.ToPointer ()),
@@ -396,6 +397,7 @@ public ref class AppWindow: public Form
 		});
 		Thread ^thread = gcnew Thread (gcnew ThreadStart (this, &AppWindow::InvokeRefreshAppItems));
 		thread->Start ();
+		this->Visible = true;
 	}
 	void SendAppData (std::vector<appmap> apps)
 	{
@@ -1169,14 +1171,25 @@ public ref class MainWnd: public Form
 			if (m_silentMode)
 			{
 				// 在此版本中，在静默模式下打开无效的包后会自动关闭窗口结束程序。
-				this->Close ();
+				while (!this->IsHandleCreated) {};
+				if (this->IsHandleCreated)
+				{
+					if (this->InvokeRequired)
+					{
+						this->Invoke (gcnew Action (this, &MainWnd::Close));
+					}
+					else
+					{
+						this->Close ();
+					}
+				}
 			}
 			else
 			{
 				invokeSetPage (1);
 			}
 		}
-		this->invokeSetDarkMode (IsAppInDarkMode ());
+		if (this->IsHandleCreated) this->invokeSetDarkMode (IsAppInDarkMode ());
 		EmptyWorkingSet ((HANDLE)-1);
 	}
 	void taskInstallPackage ()
@@ -1196,10 +1209,12 @@ public ref class MainWnd: public Form
 		invokeSetProgressText (rcString (PAGE_2_INSTALL));
 		InstallStatus status = AddPackageFromPath (pkgPath.c_str (), &ProgressCallback);
 		// MessageBeep (MB_OK);
+		std::wstring title (L"");
 		if (status == InstallStatus::Success)
 		{
 			invokeSetPage (4);
-			if (m_pkgInfo.applications.size () == 1 && !m_silentMode) this->eventOnPress_button1 (); // 用于启用 APP
+			title = StrPrintFormatW (GetRCString_cpp (PAGE_4_TITLE).c_str (), m_pkgInfo.getPropertyName ().c_str ());
+			if (m_pkgInfo.applications.size () == 1 && !m_silentMode && this->invokeGetLaunchWhenReady ()) this->eventOnPress_button1 (); // 用于启用 APP
 			Thread ^closeThread = gcnew Thread (gcnew ThreadStart (this, &MainWnd::taskCountCancel));
 			closeThread->IsBackground = true;
 			closeThread->Start ();
@@ -1207,6 +1222,7 @@ public ref class MainWnd: public Form
 		else
 		{
 			invokeSetPage (5);
+			title = StrPrintFormatW (GetRCString_cpp (PAGE_5_TITLE).c_str (), m_pkgInfo.getPropertyName ().c_str ());
 			if (m_silentMode)
 			{
 				Thread ^closeThread = gcnew Thread (gcnew ThreadStart (this, &MainWnd::taskCountCancel));
@@ -1215,7 +1231,6 @@ public ref class MainWnd: public Form
 			}
 		}
 		this->invokeClearTaskbarProgress ();
-		std::wstring title = StrPrintFormatW (GetRCString_cpp (PAGE_4_TITLE).c_str (), m_pkgInfo.getPropertyName ().c_str ());
 		std::wstring text (L"");
 		if (GetLastErrorDetailTextLength ()) text += GetLastErrorDetailText ();
 		bool res = CreateToastNotification (m_idenName, title.c_str (), text.c_str (), &ToastPressCallback, m_pkgInfo.getPropertyLogoIStream ());
@@ -1325,7 +1340,8 @@ std::vector <CMDARGUMENT> cmdargs =
 	{{L"", L"/", L"-"}, {L"CREATESHORTCUT", L"SHORTCUT", L"CREATELNK"}, {}, 8},
 	{{L"", L"/", L"-"}, {L"DELETESHORTCUT", L"DELSHORTCUT", L"DELETELNK"}, {}, 9},
 	{{L"", L"/", L"-"}, {L"DEVTOOL", L"DEVTOOLS", L"DEVMODE", L"DEVELOP"}, {}, 10},
-	{{L"", L"/", L"-"}, {L"USEEPROGRAM", L"EPROGRAM", L"ESUPPORT", L"USEE"}, {}, 11}
+	{{L"", L"/", L"-"}, {L"USEEPROGRAM", L"EPROGRAM", L"ESUPPORT", L"USEE"}, {}, 11},
+	{{L"", L"/", L"-"}, {L"CONSOLE", L"CONSOLECLIENT"}, {}, 12},
 };
 
 // 编号为大于 0 的数，失败返回非正数
@@ -1397,9 +1413,9 @@ bool ReadCommand (int argc, LPWSTR *argv)
 {
 	std::vector <std::wstring> vecObjSwFiles;
 	bool bWin32Wnd = false, bSilent = false, bVerySilent = false,
-		bUseConsole = false, bUseNewFrame = false, bDisplayHelp = false,
+		bUseCmd = false, bUseNewFrame = false, bDisplayHelp = false,
 		bCreateLnk = false, bDestroyLnk = false, bDevTool = false,
-		bUseEProgream = false;
+		bUseEProgream = false, bConsole = false;
 	for (size_t cnt = 0; cnt < (size_t)argc; cnt ++)
 	{
 		int res = GetCmdArgSerial (argv [cnt]);
@@ -1410,7 +1426,7 @@ bool ReadCommand (int argc, LPWSTR *argv)
 				case 1: bUseNewFrame = false; break;
 				case 2: bSilent = true; break;
 				case 3: bVerySilent = true; break;
-				case 4: bUseConsole = true; break;
+				case 4: bUseCmd = true; break;
 				case 5: bDisplayHelp = true; break;
 				case 6: bUseNewFrame = true; break;
 				case 7: bWin32Wnd = true; break;
@@ -1418,6 +1434,7 @@ bool ReadCommand (int argc, LPWSTR *argv)
 				case 9: bDestroyLnk = true; break;
 				case 10: bDevTool = true; break;
 				case 11: bUseEProgream = true; break;
+				case 12: bConsole = true; break;
 			}
 		}
 		else
@@ -1433,9 +1450,14 @@ bool ReadCommand (int argc, LPWSTR *argv)
 		MessageBox::Show (
 			rcString (CLHELP_1) +
 			rcString (CLHELP_2) +
+			rcString (CLHELP_3) +
 			rcString (CLHELP_4) +
 			rcString (CLHELP_5) +
-			rcString (CLHELP_7)
+			rcString (CLHELP_6) +
+			rcString (CLHELP_7) +
+			rcString (CLHELP_8) +
+			rcString (CLHELP_9) +
+			rcString (CLHELP_10)
 		);
 		return false;
 	}
@@ -1459,6 +1481,12 @@ bool ReadCommand (int argc, LPWSTR *argv)
 				_itow (WIN_TITLE, resIdStr, 10);
 				desktop.writeUIntValue (L".ShellClassInfo", L"ConfirmFileOp", 0);
 				desktop.writeStringValue (L"LocalizedFileNames", L"App Installer.lnk", std::wstring (L"@") + path + L",-" + resIdStr);
+				_itow (SHORTCUT_SETTINGS, resIdStr, 10);
+				desktop.writeStringValue (L"LocalizedFileNames", L"Settings.lnk", std::wstring (L"@") + path + L",-" + resIdStr);
+				_itow (SHORTCUT_UNINSTALL, resIdStr, 10);
+				desktop.writeStringValue (L"LocalizedFileNames", L"Uninstaller.lnk", std::wstring (L"@") + path + L",-" + resIdStr);
+				_itow (SHORTCUT_UPDATE, resIdStr, 10);
+				desktop.writeStringValue (L"LocalizedFileNames", L"Update.lnk", std::wstring (L"@") + path + L",-" + resIdStr);
 				DWORD attrs = GetFileAttributesW (desktopIni);
 				SetFileAttributesW (desktopIni, attrs | FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM);
 				DWORD folderAttrs = GetFileAttributesW (expandedPath);
@@ -1501,7 +1529,7 @@ bool ReadCommand (int argc, LPWSTR *argv)
 			else args += L"/DISABLEFRAME ";
 			if (bSilent) args += L"/SILENT ";
 			if (bVerySilent) args += L"/VERYSILENT ";
-			if (bUseConsole) args += L"/NOGUI ";
+			if (bUseCmd) args += L"/NOGUI ";
 			if (bDisplayHelp) args += L"/? ";
 			std::wstring cmdline = L"\"" + exepath + L"\" " + args;
 			{
@@ -1526,7 +1554,7 @@ bool ReadCommand (int argc, LPWSTR *argv)
 			else args += L"/DISABLEFRAME ";
 			if (bSilent) args += L"/SILENT ";
 			if (bVerySilent) args += L"/VERYSILENT ";
-			if (bUseConsole) args += L"/NOGUI ";
+			if (bUseCmd) args += L"/NOGUI ";
 			if (bDisplayHelp) args += L"/? ";
 			std::wstring cmdline = L"\"" + exepath + L"\" " + args;
 			{
@@ -1541,10 +1569,29 @@ bool ReadCommand (int argc, LPWSTR *argv)
 				}
 			}
 		}
-		else if (bUseConsole)
+		else if (bUseCmd)
 		{
 			std::wstring root = EnsureTrailingSlash (GetProgramRootDirectoryW ());
 			std::wstring exepath = root + L"WSAppPkgIns.exe";
+			std::wstring args = L"";
+			args += L"\"" + pkgPath + L"\" ";
+			std::wstring cmdline = L"\"" + exepath + L"\" " + args;
+			{
+				STARTUPINFOW si = {sizeof (STARTUPINFOW)};
+				PROCESS_INFORMATION pi = {0};
+				if (CreateProcessW (NULL, (LPWSTR)cmdline.c_str (), NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi))
+				{
+					WaitForSingleObject (pi.hProcess, INFINITE);
+					CloseHandle (pi.hProcess);
+					CloseHandle (pi.hThread);
+					return false;
+				}
+			}
+		}
+		else if (bConsole)
+		{
+			std::wstring root = EnsureTrailingSlash (GetProgramRootDirectoryW ());
+			std::wstring exepath = root + L"AppInstallerConsole.exe";
 			std::wstring args = L"";
 			args += L"\"" + pkgPath + L"\" ";
 			std::wstring cmdline = L"\"" + exepath + L"\" " + args;
@@ -1573,7 +1620,7 @@ bool ReadCommand (int argc, LPWSTR *argv)
 			else args += L"/DISABLEFRAME ";
 			if (bSilent) args += L"/SILENT ";
 			if (bVerySilent) args += L"/VERYSILENT ";
-			if (bUseConsole) args += L"/NOGUI ";
+			if (bUseCmd) args += L"/NOGUI ";
 			if (bDisplayHelp) args += L"/? ";
 			std::wstring cmdline = L"\"" + exepath + L"\" " + args;
 			{
@@ -1597,7 +1644,7 @@ bool ReadCommand (int argc, LPWSTR *argv)
 			else args += L"/DISABLEFRAME ";
 			if (bSilent) args += L"/SILENT ";
 			if (bVerySilent) args += L"/VERYSILENT ";
-			if (bUseConsole) args += L"/NOGUI ";
+			if (bUseCmd) args += L"/NOGUI ";
 			if (bDisplayHelp) args += L"/? ";
 			if (bDevTool) args += L"/DEVTOOL ";
 			std::wstring cmdline = L"\"" + exepath + L"\" " + args;
@@ -1613,34 +1660,59 @@ bool ReadCommand (int argc, LPWSTR *argv)
 				}
 			}
 		}
+		else if (bUseCmd || bConsole) return false;
 		else return true;
 	}
 	else if (vecObjSwFiles.size () > 1) // 面对多个文件
 	{
-		for (auto it : vecObjSwFiles)
+		if (bConsole)
 		{
-			wchar_t path [MAX_PATH] = {0};
-			if (GetModuleFileNameW (NULL, path, MAX_PATH))
-			{
-				std::wstring args = L"";
-				args += L"\"" + it + L"\" ";
-				if (bUseNewFrame) args += L"/ENABLEFRAME ";
-				else args += L"/DISABLEFRAME ";
-				if (bSilent) args += L"/SILENT ";
-				if (bVerySilent) args += L"/VERYSILENT ";
-				if (bUseConsole) args += L"/NOGUI ";
-				if (bDisplayHelp) args += L"/? ";
-				if (bWin32Wnd) args += L"WIN32WINDOW ";
-				if (bUseEProgream) args += L"/USEEPROGRAM ";
-				std::wstring cmdline = L"\"" + std::wstring (path) + L"\" " + args;
+			std::wstring root = EnsureTrailingSlash (GetProgramRootDirectoryW ());
+			std::wstring exepath = root + L"AppInstallerConsole.exe";
+			std::wstring args = L"";
+			for (auto it : vecObjSwFiles)
 				{
-					STARTUPINFOW si = {sizeof (STARTUPINFOW)};
-					PROCESS_INFORMATION pi = {0};
-					if (CreateProcessW (NULL, (LPWSTR)cmdline.c_str (), NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi))
+					args += L" \"" + it + L"\"";
+				}
+			std::wstring cmdline = L"\"" + exepath + L"\"" + args;
+			{
+				STARTUPINFOW si = {sizeof (STARTUPINFOW)};
+				PROCESS_INFORMATION pi = {0};
+				if (CreateProcessW (NULL, (LPWSTR)cmdline.c_str (), NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi))
+				{
+					WaitForSingleObject (pi.hProcess, INFINITE);
+					CloseHandle (pi.hProcess);
+					CloseHandle (pi.hThread);
+				}
+			}
+		}
+		else
+		{
+			for (auto it : vecObjSwFiles)
+			{
+				wchar_t path [MAX_PATH] = {0};
+				if (GetModuleFileNameW (NULL, path, MAX_PATH))
+				{
+					std::wstring args = L"";
+					args += L"\"" + it + L"\" ";
+					if (bUseNewFrame) args += L"/ENABLEFRAME ";
+					else args += L"/DISABLEFRAME ";
+					if (bSilent) args += L"/SILENT ";
+					if (bVerySilent) args += L"/VERYSILENT ";
+					if (bUseCmd) args += L"/NOGUI ";
+					if (bDisplayHelp) args += L"/? ";
+					if (bWin32Wnd) args += L"WIN32WINDOW ";
+					if (bUseEProgream) args += L"/USEEPROGRAM ";
+					std::wstring cmdline = L"\"" + std::wstring (path) + L"\" " + args;
 					{
-						WaitForSingleObject (pi.hProcess, INFINITE);
-						CloseHandle (pi.hProcess);
-						CloseHandle (pi.hThread);
+						STARTUPINFOW si = {sizeof (STARTUPINFOW)};
+						PROCESS_INFORMATION pi = {0};
+						if (CreateProcessW (NULL, (LPWSTR)cmdline.c_str (), NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi))
+						{
+							WaitForSingleObject (pi.hProcess, INFINITE);
+							CloseHandle (pi.hProcess);
+							CloseHandle (pi.hThread);
+						}
 					}
 				}
 			}
