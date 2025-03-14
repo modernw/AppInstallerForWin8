@@ -29,6 +29,7 @@ using namespace System;
 using namespace System::Windows::Forms;
 using namespace System::Threading;
 using namespace msclr::interop;
+using namespace System::Runtime::InteropServices;
 
 int GetScreenWidth () 
 {
@@ -43,6 +44,9 @@ int GetScreenHeight ()
 #define toDouble(_String_Managed_Object_) Double::Parse (_String_Managed_Object_)
 #define toBool(_String_Managed_Object_) Boolean::Parse (_String_Managed_Object_)
 #define toDateTime(_String_Managed_Object_) DateTime::Parse (_String_Managed_Object_)
+
+extern int iDpi = GetDPI ();
+extern double dDpi = iDpi * 0.01;
 
 String ^GetRCString_NET (UINT resID)
 {
@@ -206,9 +210,6 @@ void SetWebBrowserEmulation ()
 	System::Runtime::InteropServices::Marshal::FreeHGlobal (appNamePtr);
 }
 
-#include <windows.h>
-#include <string>
-
 bool IsIeVersion10 () 
 {
 	HKEY hKey;
@@ -335,44 +336,27 @@ void OutputDebugStringFormatted (const wchar_t* format, ...);
 public ref class AppWindow: public Form
 {
 	private:
-	WebBrowser ^webUI;
+	System::Windows::Forms::WebBrowser ^webUI;
 	std::vector <appmap> *appItems = new std::vector <appmap> ();
 	System::Collections::Generic::Dictionary <String ^, Delegate ^> ^jsFunctionHandlers;
 	public:
 	AppWindow () 
 	{
 		this->Visible = false;
-		BOOL transitionsEnabled = FALSE;
-		HRESULT hr = DwmSetWindowAttribute (
-			reinterpret_cast <HWND> (this->Handle.ToPointer ()),
-			DWMWA_TRANSITIONS_FORCEDISABLED,
-			&transitionsEnabled,
-			sizeof (transitionsEnabled)
-		);
-		DWMNCRENDERINGPOLICY dwmplc = DWMNCRP_ENABLED;
-		hr = DwmSetWindowAttribute (
-			reinterpret_cast <HWND> (this->Handle.ToPointer ()),
-			DWMWA_NCRENDERING_POLICY,
-			&dwmplc,
-			sizeof (dwmplc)
-		);
-		MARGINS margins = {-1, -1, -1, -1};
-		hr = DwmExtendFrameIntoClientArea (
-			reinterpret_cast <HWND> (this->Handle.ToPointer ()),
-			&margins
-		);
+		this->DoubleBuffered = true;
 		jsFunctionHandlers = gcnew System::Collections::Generic::Dictionary <String ^, Delegate ^> ();
 		this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::None;
 		this->ShowInTaskbar = false;
 		this->TopMost = true;
-		this->Size = System::Drawing::Size (392, 494);
-		if (IsWindows10AndLater ()) this->MinimumSize = System::Drawing::Size (392, 226);
-		else this->MinimumSize = System::Drawing::Size (392, 129);
-		if (IsWindows10AndLater ()) this->MaximumSize = System::Drawing::Size (392, 522);
-		else this->MaximumSize = System::Drawing::Size (368, 394);
+		this->Size = System::Drawing::Size (392 * dDpi, 494 * dDpi);
+		if (IsWindows10AndLater ()) this->MinimumSize = System::Drawing::Size (392 * dDpi, 226 * dDpi);
+		else this->MinimumSize = System::Drawing::Size (392 * dDpi, 129 * dDpi);
+		if (IsWindows10AndLater ()) this->MaximumSize = System::Drawing::Size (392 * dDpi, 522 * dDpi);
+		else this->MaximumSize = System::Drawing::Size (368 * dDpi, 394 * dDpi);
 		this->Text = rcString (APPLIST_WINTITLE);
-		webUI = gcnew WebBrowser ();
+		webUI = gcnew System::Windows::Forms::WebBrowser ();
 		webUI->Dock = DockStyle::Fill;
+		webUI->Visible = false;
 		this->Controls->Add (webUI);
 		String ^rootDir = System::IO::Path::GetDirectoryName (System::Windows::Forms::Application::ExecutablePath);
 		String ^htmlFilePath = System::IO::Path::Combine (rootDir, "HTML\\Libs\\AppList.html");
@@ -387,6 +371,7 @@ public ref class AppWindow: public Form
 	}
 	void OnDocumentCompleted (Object ^sender, WebBrowserDocumentCompletedEventArgs ^e)
 	{
+		this->CallJSFunction ("SetHighDpiMode", gcnew array <Object ^> { 2 });
 		CallJSFunction ("SetText", gcnew array <Object ^> {
 			"span-title",
 			rcString (APPLIST_TITLE)
@@ -397,9 +382,10 @@ public ref class AppWindow: public Form
 		});
 		Thread ^thread = gcnew Thread (gcnew ThreadStart (this, &AppWindow::InvokeRefreshAppItems));
 		thread->Start ();
+		webUI->Visible = true; // **加载完成后显示 webUI**
 		this->Visible = true;
 	}
-	void SendAppData (std::vector<appmap> apps)
+	void SendAppData (std::vector <appmap> apps)
 	{
 		if (appItems) delete appItems;
 		appItems = nullptr;
@@ -412,9 +398,21 @@ public ref class AppWindow: public Form
 	}
 	void eventLaunchApp (String ^appModelUserId)
 	{
+		taskLaunchApp (appModelUserId);
+	}
+	void taskLaunchApp (Object ^parameter)
+	{
+		String^ aMUId = safe_cast <String ^> (parameter);
 		DWORD dwPId = 0;
-		LaunchApp ((marshal_as <std::wstring> (appModelUserId)).c_str (), &dwPId);
-		this->Close ();
+		LaunchApp ((marshal_as <std::wstring> (aMUId)).c_str (), &dwPId);
+		if (this->InvokeRequired)
+		{
+			if (this->IsHandleCreated) this->Invoke (gcnew Action (this, &AppWindow::Close));
+		}
+		else
+		{
+			if (this->IsHandleCreated) this->Close ();
+		}
 	}
 	void eventCancelWindow ()
 	{
@@ -461,9 +459,9 @@ public ref class AppWindow: public Form
 	{
 		CallJSFunction ("ClearListItems", gcnew array <Object ^> { });
 		bool isWin10 = IsWindows10AndLater ();
-		size_t height = ((appItems->size ()) * (isWin10 ? 50 : 60)) + (isWin10 ? 206 : 120);
-		if (height < (isWin10 ? 522 : 394)) this->Height = height;
-		else this->Height = 522;
+		size_t height = ((appItems->size ()) * (isWin10 ? 50 : 60) * dDpi) + (isWin10 ? 206 : 120) * dDpi;
+		if (height < (isWin10 ? 522 : 394) * dDpi) this->Height = height;
+		else this->Height = 522 * dDpi;
 		this->Left = (GetScreenWidth () - this->Width) / 2;
 		this->Top = (GetScreenHeight () - this->Height) / 2;
 		for (auto it : *appItems)
@@ -478,30 +476,44 @@ public ref class AppWindow: public Form
 			});
 		}
 	}
+	protected:
+	virtual void OnHandleCreated (EventArgs^ e) override
+	{
+		Form::OnHandleCreated (e);
+		if (Environment::OSVersion->Version->Major >= 6)
+		{
+			MARGINS margins = {0, 0, 0, 0};
+			HRESULT hr = DwmExtendFrameIntoClientArea ((HWND)this->Handle.ToPointer (), &margins);
+		}
+	}
 };
 
 public ref class MainWnd: public Form
 {
 	private:
-	WebBrowser ^webUI;
+	System::Windows::Forms::WebBrowser ^webUI;
 	int page;
 	System::Collections::Generic::Dictionary <String ^, Delegate ^> ^jsFunctionHandlers;
+	System::Windows::Forms::Timer^ fadeTimer;
 	public:
 	MainWnd (): page (-1)
 	{
 		jsFunctionHandlers = gcnew System::Collections::Generic::Dictionary <String ^, Delegate ^> ();
+		this->Opacity = 0.0;
 		initWnd ();
 	}
 	private:
 	void initWnd ()
 	{
 		this->Visible = false;
-		this->webUI = gcnew WebBrowser ();
+		this->DoubleBuffered = true;
+		this->BackColor = System::Drawing::Color::FromArgb (0, 120, 215);
+		SetWebBrowserEmulation ();
+		this->webUI = gcnew System::Windows::Forms::WebBrowser ();
+		this->webUI->BackColor = this->BackColor;
 		this->SuspendLayout ();
 		this->webUI->Dock = DockStyle::Fill;
-		this->webUI->DocumentCompleted += gcnew WebBrowserDocumentCompletedEventHandler (this, &MainWnd::eventOnDocumentCompleted);
 		this->webUI->IsWebBrowserContextMenuEnabled = false;
-		this->webUI->PreviewKeyDown += gcnew System::Windows::Forms::PreviewKeyDownEventHandler (this, &MainWnd::eventOnPreviewKeyDown_WebBrowser);
 		this->Controls->Add (this->webUI);
 		HICON tempIco = LoadRCIcon (ICON_TASKBAR);
 		if (tempIco)
@@ -537,21 +549,22 @@ public ref class MainWnd: public Form
 			m_initConfig.readUIntValue (L"Settings", L"MinPosHeight", (unsigned)_wtol (GetRCString_cpp (LIMITHEIGHT).c_str ()))
 		);
 		this->WindowState = (System::Windows::Forms::FormWindowState)m_initConfig.readIntValue (L"Settings", L"WindowPos", (int)System::Windows::Forms::FormWindowState::Normal);
-		this->ClientSize = System::Drawing::Size (wid, hei);
+		this->ClientSize = System::Drawing::Size (wid * dDpi, hei * dDpi);
 		this->Text = GetRCString (WIN_TITLE);
+		this->ResumeLayout (false);
+		webUI->ObjectForScripting = this;
+		this->webUI->DocumentCompleted += gcnew WebBrowserDocumentCompletedEventHandler (this, &MainWnd::eventOnDocumentCompleted);
+		this->webUI->PreviewKeyDown += gcnew System::Windows::Forms::PreviewKeyDownEventHandler (this, &MainWnd::eventOnPreviewKeyDown_WebBrowser);
+		this->Resize += gcnew System::EventHandler (this, &MainWnd::eventOnResize);
 		this->Load += gcnew EventHandler (this, &MainWnd::eventOnCreate);
 		this->ResizeEnd += gcnew EventHandler (this, &MainWnd::eventOnResizeEnd);
-		this->ResumeLayout (false);
-		this->Resize += gcnew System::EventHandler (this, &MainWnd::eventOnResize);
 	}
 	void eventOnCreate (System::Object ^sender, System::EventArgs ^e)
 	{
-		SetWebBrowserEmulation ();
 		String ^rootDir = System::IO::Path::GetDirectoryName (System::Windows::Forms::Application::ExecutablePath);
 		String ^htmlFilePath = System::IO::Path::Combine (rootDir, "HTML\\Index.html");
 		if (IsIeVersion10 ()) htmlFilePath = System::IO::Path::Combine (rootDir, "HTML\\IndexIE10.html"); // IE10 (Win8) 特供
 		webUI->Navigate (htmlFilePath);
-		webUI->ObjectForScripting = this;
 	}
 	void eventOnPreviewKeyDown_WebBrowser (System::Object ^sender, System::Windows::Forms::PreviewKeyDownEventArgs ^e)
 	{
@@ -562,8 +575,24 @@ public ref class MainWnd: public Form
 	{
 		if (e->Url->ToString () == webUI->Url->ToString ())
 		{
-			eventOnPageLoad ();
+			this->CallJSFunction ("SetHighDpiMode", gcnew array <Object ^> { 2 });
+			this->CallJSFunction ("SetPageZoom", gcnew array <Object ^> { dDpi });
+			this->Visible = true;
+			fadeTimer = gcnew System::Windows::Forms::Timer ();
+			fadeTimer->Interval = 5;
+			fadeTimer->Tick += gcnew EventHandler (this, &MainWnd::fadeTimer_Tick);
+			fadeTimer->Start ();
+			this->setLaunchWhenReadyJS (m_initConfig.readBoolValue (L"Settings", L"LaunchWhenReady", true));
+			Thread ^thread = gcnew Thread (gcnew ThreadStart (this, &MainWnd::taskReadFile));
+			thread->Start ();
+			Thread ^thread2 = gcnew Thread (gcnew ThreadStart (this, &MainWnd::taskCountDarkMode));
+			thread2->Start ();
 		}
+	}
+	void fadeTimer_Tick (Object^ sender, EventArgs^ e)
+	{
+		if (this->Opacity < 1.0) this->Opacity += 0.2; 
+		else fadeTimer->Stop ();
 	}
 	void eventOnResizeEnd (Object ^sender, EventArgs ^e)
 	{
@@ -576,7 +605,7 @@ public ref class MainWnd: public Form
 			this->changeMaxDisplayPicJS (false);
 		}
 	}
-	void eventOnResize (Object ^sender, EventArgs ^e)
+	void adjustWhenResize ()
 	{
 		if (this->WindowState == FormWindowState::Maximized)
 		{
@@ -589,22 +618,44 @@ public ref class MainWnd: public Form
 			this->changeMaxDisplayPicJS (false);
 			if (m_initConfig.readBoolValue (L"Settings", L"SavePosBeforeClosing"))
 			{
-				m_initConfig.writeUIntValue (L"Settings", L"SavePosWidth", this->Width);
-				m_initConfig.writeUIntValue (L"Settings", L"SavePosHeight", this->Height);
+				System::Drawing::Size ^client = this->ClientSize;
+				if (dDpi == 1)
+				{
+					m_initConfig.writeUIntValue (L"Settings", L"SavePosWidth", client->Width);
+					m_initConfig.writeUIntValue (L"Settings", L"SavePosHeight", client->Height);
+				}
+				else
+				{
+					m_initConfig.writeUIntValue (L"Settings", L"SavePosWidth", client->Width / dDpi);
+					m_initConfig.writeUIntValue (L"Settings", L"SavePosHeight", client->Height / dDpi);
+				}
+			}
+		}
+		if (this->webUI->IsHandleCreated)
+		{
+			UINT resID = 0;
+			switch (page)
+			{
+				case 2: resID = PAGE_1_TITLE; break;
+				case 3: resID = PAGE_2_TITLE; break;
+				case 4: resID = PAGE_4_TITLE; break;
+				case 5: resID = PAGE_5_TITLE; break;
+			}
+			if (resID)
+			{
+				std::wstring title = m_pkgInfo.getPropertyName ();
+				std::wstring temp = StrPrintFormatW (GetRCString_cpp (resID).c_str (), L"　　");
+				std::wstring temp1 = temp + title;
+				size_t reduce = getTextOmitAdviceJS (gcnew String ("caption-title"), gcnew String (temp1.c_str ()), (size_t)2);
+				std::wstring sub = title.substr (0, title.length () - reduce) + (reduce > 3 ? L"..." : L"");
+				setTextJS ("caption-title", gcnew String (StrPrintFormatW (GetRCString_cpp (resID).c_str (), sub.c_str ()).c_str ()));
+				// this->CallJSFunction ("adjustTextareaHeight", gcnew array <Object ^> {});
 			}
 		}
 	}
-	void eventOnPageLoad ()
+	void eventOnResize (Object ^sender, EventArgs ^e)
 	{
-		this->Visible = true;
-		this->setLaunchWhenReadyJS (m_initConfig.readBoolValue (L"Settings", L"LaunchWhenReady", true));
-	#ifdef _DEBUG
-		if (IsIeVersion10 ()) hideFrameJS (false);
-	#endif
-		Thread ^thread = gcnew Thread (gcnew ThreadStart (this, &MainWnd::taskReadFile));
-		thread->Start ();
-		Thread ^thread2 = gcnew Thread (gcnew ThreadStart (this, &MainWnd::taskCountDarkMode));
-		thread2->Start ();
+		this->adjustWhenResize ();
 	}
 	void eventOnPress_button1 ()
 	{
@@ -886,6 +937,21 @@ public ref class MainWnd: public Form
 			setProgressTextJS (content);
 		}
 	}
+	void adjustTextareaHeightJS ()
+	{
+		this->CallJSFunction ("adjustTextareaHeight", gcnew array <Object ^> {});
+	}
+	void invokeAdjustTextareaHeight ()
+	{
+		if (this->InvokeRequired)
+		{
+			this->Invoke (gcnew Action (this, &MainWnd::adjustTextareaHeightJS));
+		}
+		else
+		{
+			adjustTextareaHeightJS ();
+		}
+	}
 	void setPage (int serial)
 	{
 		switch (serial)
@@ -900,8 +966,10 @@ public ref class MainWnd: public Form
 				break;
 			case 2:
 			{
-				std::wstring title = m_pkgInfo.getPropertyName (), titleF = StrPrintFormatW (GetRCString_cpp (PAGE_1_TITLE).c_str (), title.c_str ());
-				size_t reduce = getTextOmitAdviceJS (gcnew String ("caption-title"), gcnew String (titleF.c_str ()), (size_t)2);
+				std::wstring title = m_pkgInfo.getPropertyName ();
+				std::wstring temp = StrPrintFormatW (GetRCString_cpp (PAGE_1_TITLE).c_str (), L"　　");
+				std::wstring temp1 = temp + title;
+				size_t reduce = getTextOmitAdviceJS (gcnew String ("caption-title"), gcnew String (temp1.c_str ()), (size_t)2);
 				std::wstring sub = title.substr (0, title.length () - reduce) + (reduce > 3 ? L"..." : L"");
 				setTextJS ("caption-title", gcnew String (StrPrintFormatW (GetRCString_cpp (PAGE_1_TITLE).c_str (), sub.c_str ()).c_str ()));
 			}
@@ -978,16 +1046,20 @@ public ref class MainWnd: public Form
 			case 3:
 			{
 				invokeSetProgressText (rcString (PAGE_2_LOADING));
-				std::wstring title = m_pkgInfo.getPropertyName (), titleF = StrPrintFormatW (GetRCString_cpp (PAGE_2_TITLE).c_str (), title.c_str ());
-				size_t reduce = getTextOmitAdviceJS (gcnew String ("caption-title"), gcnew String (titleF.c_str ()), (size_t)2);
+				std::wstring title = m_pkgInfo.getPropertyName ();
+				std::wstring temp = StrPrintFormatW (GetRCString_cpp (PAGE_2_TITLE).c_str (), L"　　");
+				std::wstring temp1 = temp + title;
+				size_t reduce = getTextOmitAdviceJS (gcnew String ("caption-title"), gcnew String (temp1.c_str ()), (size_t)2);
 				std::wstring sub = title.substr (0, title.length () - reduce) + (reduce > 3 ? L"..." : L"");
 				setTextJS ("caption-title", gcnew String (StrPrintFormatW (GetRCString_cpp (PAGE_2_TITLE).c_str (), sub.c_str ()).c_str ()));
 			}
 			break;
 			case 4:
 			{
-				std::wstring title = m_pkgInfo.getPropertyName (), titleF = StrPrintFormatW (GetRCString_cpp (PAGE_4_TITLE).c_str (), title.c_str ());
-				size_t reduce = getTextOmitAdviceJS (gcnew String ("caption-title"), gcnew String (titleF.c_str ()), (size_t)2);
+				std::wstring title = m_pkgInfo.getPropertyName ();
+				std::wstring temp = StrPrintFormatW (GetRCString_cpp (PAGE_4_TITLE).c_str (), L"　　");
+				std::wstring temp1 = temp + title;
+				size_t reduce = getTextOmitAdviceJS (gcnew String ("caption-title"), gcnew String (temp1.c_str ()), (size_t)2);
 				std::wstring sub = title.substr (0, title.length () - reduce) + (reduce > 3 ? L"..." : L"");
 				setTextJS ("caption-title", gcnew String (StrPrintFormatW (GetRCString_cpp (PAGE_4_TITLE).c_str (), sub.c_str ()).c_str ()));
 			}
@@ -1007,8 +1079,10 @@ public ref class MainWnd: public Form
 			break;
 			case 5:
 			{
-				std::wstring title = m_pkgInfo.getPropertyName (), titleF = StrPrintFormatW (GetRCString_cpp (PAGE_5_TITLE).c_str (), title.c_str ());
-				size_t reduce = getTextOmitAdviceJS (gcnew String ("caption-title"), gcnew String (titleF.c_str ()), (size_t)2);
+				std::wstring title = m_pkgInfo.getPropertyName ();
+				std::wstring temp = StrPrintFormatW (GetRCString_cpp (PAGE_5_TITLE).c_str (), L"　　");
+				std::wstring temp1 = temp + title;
+				size_t reduce = getTextOmitAdviceJS (gcnew String ("caption-title"), gcnew String (temp1.c_str ()), (size_t)2);
 				std::wstring sub = title.substr (0, title.length () - reduce) + (reduce > 3 ? L"..." : L"");
 				setTextJS ("caption-title", gcnew String (StrPrintFormatW (GetRCString_cpp (PAGE_5_TITLE).c_str (), sub.c_str ()).c_str ()));
 				if (GetLastErrorDetailTextLength ()) setTextJS ("caption-more-info", gcnew String (GetLastErrorDetailText ()));
@@ -1043,6 +1117,7 @@ public ref class MainWnd: public Form
 			setPicBoxVisibilityJS (false);
 		}
 		page = serial;
+		this->adjustWhenResize ();
 	}
 	void invokeSetPage (int page)
 	{
@@ -1189,7 +1264,10 @@ public ref class MainWnd: public Form
 				invokeSetPage (1);
 			}
 		}
-		if (this->IsHandleCreated) this->invokeSetDarkMode (IsAppInDarkMode ());
+		if (this->IsHandleCreated)
+		{
+			this->invokeSetDarkMode (IsAppInDarkMode ());
+		}
 		EmptyWorkingSet ((HANDLE)-1);
 	}
 	void taskInstallPackage ()
