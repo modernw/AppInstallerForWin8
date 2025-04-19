@@ -537,10 +537,10 @@ public ref class MainWnd: public Form
 		}
 		else
 		{
-			wid = m_initConfig.readUIntValue (L"Settings", L"SavePosWidth",
+			wid = m_initConfig.readUIntValue (L"Settings", L"PosWidth",
 				(unsigned)_wtol (GetRCString_cpp (INITWIDTH).c_str ())
 			);
-			hei = m_initConfig.readUIntValue (L"Settings", L"SavePosHeight",
+			hei = m_initConfig.readUIntValue (L"Settings", L"PosHeight",
 				(unsigned)_wtol (GetRCString_cpp (INITHEIGHT).c_str ())
 			);
 		}
