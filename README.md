@@ -2,6 +2,8 @@
 
 A Windows Store App Installer for Windows 8.x.
 
+Remake version: https://github.com/modernw/App-Installer-For-Windows-8.x-Reset . This version is currently in beta.
+
 (Translated by ChatGTP)
 
 The purpose of this project is actually to create an intuitive and visually appealing Windows Store app installer, which also serves a personal need. Unfortunately, I only have a foundation in C/C++ programming, and I am not familiar with .NET/WinRT/HTML/JavaScript/Win32API. Here, I would like to thank AI (ChatGPT, GitHub Copilot, and DeepSeek) for making this project possible when it seemed impossible. That being said, suitable tools were actually hard to find (back in the Windows 8.x era). I remember Windows App Boss, but it wasn’t specialized—it also had other features. Over such a long period, there weren’t that many tools available, and compared to today, they were difficult to find, which is quite regretful.
